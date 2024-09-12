@@ -7,7 +7,3 @@ class calander():
 
     print(calendar.month(yy,mm))
 
-
-
-
-    
