@@ -1,0 +1,18 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: url('https://via.placeholder.com/1920x600') no-repeat center center;
+    background-size: cover;
+}
+
+h1, h2 {
+    font-weight: bold;
+}
+
+footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
