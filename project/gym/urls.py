@@ -24,9 +24,3 @@ urlpatterns = [
     path('reservation/failure/', views.reservation_failure, name='reservation-failure'),
 ]
 
-from django.urls import include, path
-
-urlpatterns = [
-    path('', include('gym.urls')),
-    # other paths
-]

@@ -1,14 +1,15 @@
 from django.shortcuts import render
 from .models import Gym
-
-def home(request):
-    gyms = Gym.objects.all()
-    return render(request, 'templates/home.html', {'gyms': gyms})
-
-
 from django.utils import timezone
 from .models import Reservation, Gym
 from datetime import timedelta
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.utils.dateparse import parse_datetime
+
+def home(request):
+    gyms = Gym.objects.all()
+    return render(request, 'gym_reservation/home.html', {'gyms': gyms})
 
 def gym_detail(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
@@ -21,15 +22,10 @@ def gym_detail(request, gym_id):
         if not Reservation.objects.filter(gym=gym, time_slot=slot_time).exists():
             available_slots.append(slot_time)
 
-    return render(request, 'templates/gym_detail.html', {
+    return render(request, 'gym_reservation/gym_detail.html', {
         'gym': gym,
         'available_slots': available_slots
     })
-
-
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
-from django.utils.dateparse import parse_datetime
 
 @login_required
 def make_reservation(request, gym_id, time_slot):
@@ -48,10 +44,8 @@ def make_reservation(request, gym_id, time_slot):
     
     return redirect('reservation-failure')
 
-
-
 def reservation_success(request):
-    return render(request, 'templates/reservation_success.html')
+    return render(request, 'gym_reservation/reservation_success.html')
 
 def reservation_failure(request):
-    return render(request, 'templates/reservation_failure.html')
+    return render(request, 'gym_reservation/reservation_failure.html')
