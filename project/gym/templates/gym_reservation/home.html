@@ -56,6 +56,66 @@
             color: #333;
         }
 
+        .card-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .gym-card {
+            flex: 1;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .gym-card img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .gym-card h3 {
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .gym-status {
+            margin: 10px 0;
+            padding: 5px;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .status-open {
+            background-color: #28a745;
+        }
+
+        .status-occupied {
+            background-color: #dc3545;
+        }
+
+        .gym-card button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .gym-card button:hover {
+            background-color: #0056b3;
+        }
+
         ul {
             padding: 0;
         }
@@ -115,6 +175,24 @@
     <!-- Main Content Section -->
     <main>
         <h1>Select a Gym</h1>
+        <div class="card-container">
+            <!-- First Gym Card -->
+            <div class="gym-card">
+                <img src="gym1-placeholder.jpg" alt="Gym 1">
+                <h3>Gym 1</h3>
+                <div class="gym-status status-open">Open</div>
+                <button>Make a Reservation</button>
+            </div>
+
+            <!-- Second Gym Card -->
+            <div class="gym-card">
+                <img src="gym2-placeholder.jpg" alt="Gym 2">
+                <h3>Gym 2</h3>
+                <div class="gym-status status-occupied">Occupied</div>
+                <button disabled>Make a Reservation</button>
+            </div>
+        </div>
+
         <ul>
             {% for gym in gyms %}
                 <li><a href="{% url 'gym-detail' gym.id %}">{{ gym.name }}</a></li>
