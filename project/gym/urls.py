@@ -16,9 +16,17 @@ Including another URLconf
 from django.urls import path
 from . import views
 
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('gym/<int:gym_id>/', views.gym_detail, name='gym-detail'),
+    path('gym/<int:gym_id>/reserve/<str:time_slot>/', views.make_reservation, name='make-reservation'),
+    path('reservation/success/', views.reservation_success, name='reservation-success'),
+    path('reservation/failure/', views.reservation_failure, name='reservation-failure'),
+]
 
+from django.urls import include, path
 
 urlpatterns = [
-   
-     path('', views.home, name="home")
+    path('', include('gym.urls')),
+    # other paths
 ]

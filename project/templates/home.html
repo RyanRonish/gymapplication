@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Gyms</title>
+</head>
+<body>
+    <h1>Select a Gym</h1>
+    <ul>
+        {% for gym in gyms %}
+            <li><a href="{% url 'gym-detail' gym.id %}">{{ gym.name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

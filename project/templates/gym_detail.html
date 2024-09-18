@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gym Time Slots</title>
+</head>
+<body>
+    <h1>{{ gym.name }} - Available Time Slots</h1>
+    <ul>
+        {% for slot in available_slots %}
+            <li><a href="{% url 'make-reservation' gym.id slot %}">{{ slot }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'home' %}">Back to Gyms</a>
+</body>
+</html>
