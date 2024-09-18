@@ -49,3 +49,23 @@ def reservation_success(request):
 
 def reservation_failure(request):
     return render(request, 'gym_reservation/reservation_failure.html')
+
+from django.shortcuts import render
+from .models import Gym, Reservation
+from django.contrib.auth.models import User
+
+def home(request):
+    gyms = Gym.objects.all()
+    return render(request, 'gym_reservation/home.html', {'gyms': gyms})
+
+def gyms(request):
+    gyms = Gym.objects.all()
+    return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
+
+def reservations(request):
+    reservations = Reservation.objects.filter(resident=request.user)
+    return render(request, 'gym_reservation/reservations.html', {'reservations': reservations})
+
+def profile(request):
+    user = request.user
+    return render(request, 'gym_reservation/profile.html', {'user': user})

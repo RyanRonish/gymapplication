@@ -22,5 +22,9 @@ urlpatterns = [
     path('gym/<int:gym_id>/reserve/<str:time_slot>/', views.make_reservation, name='make-reservation'),
     path('reservation/success/', views.reservation_success, name='reservation-success'),
     path('reservation/failure/', views.reservation_failure, name='reservation-failure'),
+    path('gyms/', views.gyms, name='gyms'),
+    path('reservations/', views.reservations, name='reservations'),
+    path('profile/', views.profile, name='profile'),
+    path('gym/<int:gym_id>/', views.gym_detail, name='gym-detail'),
 ]
 

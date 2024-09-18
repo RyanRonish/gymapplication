@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ronish Gym Reservation</title>
+    <title>Ronish Gym Reservation - Home</title>
     <style>
-        /* Basic styles for the page */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -89,9 +88,6 @@
             color: #fff;
             text-align: center;
             padding: 20px;
-            position: absolute;
-            width: 100%;
-            bottom: 0;
         }
 
         footer p {
@@ -109,10 +105,10 @@
     <!-- Navbar Section -->
     <nav>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Gyms</a></li>
-            <li><a href="#">Reservations</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'gyms' %}">Gyms</a></li>
+            <li><a href="{% url 'reservations' %}">Reservations</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
         </ul>
     </nav>
 

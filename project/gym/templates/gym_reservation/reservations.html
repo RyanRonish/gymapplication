@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Reservations</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Your Reservations</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'gyms' %}">Gyms</a></li>
+            <li><a href="{% url 'reservations' %}">Reservations</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Current Reservations</h2>
+        <ul>
+            {% for reservation in reservations %}
+                <li>{{ reservation.gym.name }} - {{ reservation.time_slot }}</li>
+            {% endfor %}
+        </ul>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Ronish Apartment Gym Reservation System</p>
+    </footer>
+</body>
+</html>
