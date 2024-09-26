@@ -1,11 +1,9 @@
-from django.shortcuts import render
-from .models import Gym
+from django.shortcuts import render, redirect
+from .models import Gym, Reservation
 from django.utils import timezone
-from .models import Reservation, Gym
-from datetime import timedelta
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
 from django.utils.dateparse import parse_datetime
+from datetime import timedelta
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     gyms = Gym.objects.all()
@@ -50,22 +48,16 @@ def reservation_success(request):
 def reservation_failure(request):
     return render(request, 'gym_reservation/reservation_failure.html')
 
-from django.shortcuts import render
-from .models import Gym, Reservation
-from django.contrib.auth.models import User
-
-def home(request):
-    gyms = Gym.objects.all()
-    return render(request, 'gym_reservation/home.html', {'gyms': gyms})
-
-def gyms(request):
-    gyms = Gym.objects.all()
-    return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
-
+@login_required
 def reservations(request):
+    # Get all reservations for the logged-in user
     reservations = Reservation.objects.filter(resident=request.user)
     return render(request, 'gym_reservation/reservations.html', {'reservations': reservations})
 
 def profile(request):
     user = request.user
     return render(request, 'gym_reservation/profile.html', {'user': user})
+
+def gyms(request):
+    gyms = Gym.objects.all()
+    return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
