@@ -5,57 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ronish Gym Reservation - Home</title>
     {% load static %}
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
     <!-- Header Section -->
-    <header>
+    <header class="bg-dark text-white text-center py-3">
         <h1>Ronish Apartment Gym Reservation</h1>
     </header>
 
     <!-- Navbar Section -->
-    <nav>
-        <ul>
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'gyms' %}">Gyms</a></li>
-            <li><a href="{% url 'reservations' %}">Reservations</a></li>
-            <li><a href="{% url 'profile' %}">Profile</a></li>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="{% url 'gyms' %}" class="nav-link">Gyms</a></li>
+            <li class="nav-item"><a href="{% url 'reservations' %}" class="nav-link">Reservations</a></li>
+            <li class="nav-item"><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
         </ul>
     </nav>
 
     <!-- Main Content Section -->
-    <main>
-        <h1>Select a Gym</h1>
-        <div class="card-container">
+    <main class="container mt-4">
+        <h1 class="text-center">Select a Gym</h1>
+        <div class="card-deck">
             <!-- First Gym Card -->
-            <div class="gym-card">
-                <img src="gym1-placeholder.jpg" alt="Gym 1">
-                <h3>Gym 1</h3>
-                <div class="gym-status status-open">Open</div>
-                <button>Make a Reservation</button>
+            <div class="card">
+                <img src="gym1-placeholder.jpg" class="card-img-top" alt="Gym 1">
+                <div class="card-body">
+                    <h5 class="card-title">Gym 1</h5>
+                    <div class="gym-status status-open">Open</div>
+                    <a href="#" class="btn btn-primary">Make a Reservation</a>
+                </div>
             </div>
 
             <!-- Second Gym Card -->
-            <div class="gym-card">
-                <img src="gym2-placeholder.jpg" alt="Gym 2">
-                <h3>Gym 2</h3>
-                <div class="gym-status status-occupied">Occupied</div>
-                <button disabled>Make a Reservation</button>
+            <div class="card">
+                <img src="gym2-placeholder.jpg" class="card-img-top" alt="Gym 2">
+                <div class="card-body">
+                    <h5 class="card-title">Gym 2</h5>
+                    <div class="gym-status status-occupied">Occupied</div>
+                    <a href="#" class="btn btn-primary disabled">Make a Reservation</a>
+                </div>
             </div>
         </div>
-
-        <ul>
-            {% for gym in gyms %}
-                <li><a href="{% url 'gym-detail' gym.id %}">{{ gym.name }}</a></li>
-            {% endfor %}
-        </ul>
     </main>
 
     <!-- Footer Section -->
-    <footer>
+    <footer class="bg-dark text-white text-center py-3">
         <p>&copy; 2024 Ronish Apartment Gym Reservation System</p>
     </footer>
 
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
