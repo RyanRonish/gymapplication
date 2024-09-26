@@ -4,178 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Gyms</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 15px 20px;
-            text-align: center;
-        }
-
-        nav {
-            background-color: #444;
-            padding: 10px 0;
-        }
-
-        nav ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li {
-            margin: 0 15px;
-        }
-
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        main {
-            margin: 20px auto;
-            max-width: 800px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        .card-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .gym-card {
-            flex: 1;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-
-        .gym-card img {
-            max-width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-
-        .gym-card h3 {
-            color: #333;
-            margin-top: 10px;
-        }
-
-        .gym-status {
-            margin: 10px 0;
-            padding: 5px;
-            color: #fff;
-            font-weight: bold;
-            border-radius: 5px;
-        }
-
-        .status-open {
-            background-color: #28a745;
-        }
-
-        .status-occupied {
-            background-color: #dc3545;
-        }
-
-        .gym-card button {
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .gym-card button:hover {
-            background-color: #0056b3;
-        }
-
-        ul {
-            padding: 0;
-        }
-
-        ul li {
-            list-style: none;
-            margin: 15px 0;
-        }
-
-        ul li a {
-            text-decoration: none;
-            font-size: 18px;
-            color: #007bff;
-            font-weight: bold;
-            display: block;
-            padding: 10px;
-            border: 2px solid #007bff;
-            text-align: center;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        ul li a:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-        }
-
-        footer p {
-            margin: 0;
-        }
-    </style>
+    {% load static %}
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <header>
+    <!-- Header Section -->
+    <header class="bg-dark text-white text-center py-3">
         <h1>Gyms Available</h1>
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'gyms' %}">Gyms</a></li>
-            <li><a href="{% url 'reservations' %}">Reservations</a></li>
-            <li><a href="{% url 'profile' %}">Profile</a></li>
+    <!-- Navbar Section -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="{% url 'gyms' %}" class="nav-link">Gyms</a></li>
+            <li class="nav-item"><a href="{% url 'reservations' %}" class="nav-link">Reservations</a></li>
+            <li class="nav-item"><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
         </ul>
     </nav>
 
-    <main>
-        <h2>Gyms</h2>
-        
+    <!-- Main Content Section -->
+    <main class="container mt-4">
+        <h2 class="text-center">Gyms</h2>
+        <div class="row">
+            <!-- First Gym Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card text-center">
+                    <img src="https://via.placeholder.com/400x200.png?text=Gym+1" class="card-img-top" alt="Gym 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Gym 1</h5>
+                        <div class="gym-status status-open">Open</div>
+                        <a href="#" class="btn btn-primary mt-3">Make a Reservation</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Second Gym Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card text-center">
+                    <img src="https://via.placeholder.com/400x200.png?text=Gym+2" class="card-img-top" alt="Gym 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Gym 2</h5>
+                        <div class="gym-status status-occupied">Occupied</div>
+                        <a href="#" class="btn btn-primary mt-3 disabled">Make a Reservation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <footer>
+    <!-- Footer Section -->
+    <footer class="bg-dark text-white text-center py-3">
         <p>&copy; 2024 Ronish Apartment Gym Reservation System</p>
     </footer>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
