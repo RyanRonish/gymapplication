@@ -1,14 +1,20 @@
 from django.shortcuts import render, redirect
-from .models import Gym, Reservation
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
+from .models import Gym, Reservation
 
+# Home view - accessible only by logged-in users
+@login_required
 def home(request):
     gyms = Gym.objects.all()
     return render(request, 'gym_reservation/home.html', {'gyms': gyms})
 
+# Gym detail view - accessible only by logged-in users
+@login_required
 def gym_detail(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
     current_time = timezone.now()
@@ -25,6 +31,7 @@ def gym_detail(request, gym_id):
         'available_slots': available_slots
     })
 
+# View to handle making a reservation
 @login_required
 def make_reservation(request, gym_id, time_slot):
     gym = Gym.objects.get(id=gym_id)
@@ -42,22 +49,40 @@ def make_reservation(request, gym_id, time_slot):
     
     return redirect('reservation-failure')
 
+# Success and failure views for reservation outcomes
 def reservation_success(request):
     return render(request, 'gym_reservation/reservation_success.html')
 
 def reservation_failure(request):
     return render(request, 'gym_reservation/reservation_failure.html')
 
+# View to show the user's reservations
 @login_required
 def reservations(request):
-    # Get all reservations for the logged-in user
     reservations = Reservation.objects.filter(resident=request.user)
     return render(request, 'gym_reservation/reservations.html', {'reservations': reservations})
 
+# Profile view for the logged-in user
+@login_required
 def profile(request):
     user = request.user
     return render(request, 'gym_reservation/profile.html', {'user': user})
 
+# View to list all gyms
+@login_required
 def gyms(request):
     gyms = Gym.objects.all()
     return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
+
+# User registration view
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # Log in the user after successful registration
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'registration/register.html', {'form': form})

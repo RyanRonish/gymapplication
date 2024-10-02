@@ -129,4 +129,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # settings.py
 LOGIN_URL = '/login/'  # Define the login URL Django should redirect to
 # settings.py
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'

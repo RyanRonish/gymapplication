@@ -19,15 +19,17 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('gym/<int:gym_id>/', views.gym_detail, name='gym-detail'),
-    path('gym/<int:gym_id>/reserve/<str:time_slot>/', views.make_reservation, name='make-reservation'),
-    path('reservation/success/', views.reservation_success, name='reservation-success'),
-    path('reservation/failure/', views.reservation_failure, name='reservation-failure'),
     path('gyms/', views.gyms, name='gyms'),
     path('reservations/', views.reservations, name='reservations'),
     path('profile/', views.profile, name='profile'),
     path('gym/<int:gym_id>/', views.gym_detail, name='gym-detail'),
-    path('login/', auth_views.LoginView.as_view(), name='login'),  # Login page
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),  # Logout page
+    path('gym/<int:gym_id>/reserve/<str:time_slot>/', views.make_reservation, name='make-reservation'),
+    path('reservation-success/', views.reservation_success, name='reservation-success'),
+    path('reservation-failure/', views.reservation_failure, name='reservation-failure'),
+    
+    # User authentication views
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('register/', views.register, name='register'),
 ]
 
