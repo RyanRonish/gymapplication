@@ -75,14 +75,36 @@ def gyms(request):
     return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
 
 # User registration view
+from .forms import CustomUserCreationForm
+
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # Log in the user after successful registration
+            # Create the user's profile with apartment number
+            user.profile.apartment_number = form.cleaned_data.get('apartment_number')
+            user.profile.save()
+            login(request, user)
             return redirect('home')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     
     return render(request, 'registration/register.html', {'form': form})
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=request.user.profile)
+
+    return render(request, 'gym_reservation/profile.html', {'form': form})

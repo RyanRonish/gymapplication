@@ -132,3 +132,6 @@ LOGIN_URL = '/login/'  # Define the login URL Django should redirect to
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
