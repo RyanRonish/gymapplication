@@ -93,9 +93,9 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm
+from django.shortcuts import render, redirect
+from .forms import ProfileForm  # Import the form created earlier
 
 @login_required
 def profile(request):
@@ -107,4 +107,7 @@ def profile(request):
     else:
         form = ProfileForm(instance=request.user.profile)
 
-    return render(request, 'gym_reservation/profile.html', {'form': form})
+    return render(request, 'gym_reservation/profile.html', {
+        'form': form,
+        'user': request.user
+    })
