@@ -8,21 +8,74 @@
 <main class="container mt-4">
     <h2 class="text-center">Reservations for {{ gym.name }}</h2>
 
-    <!-- Available Time Slots -->
-    <h4 class="text-center mt-4">Available Time Slots</h4>
-    <div class="row">
-        {% for slot in available_slots %}
-        <div class="col-md-3 mb-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">{{ slot|date:"H:i" }}</h5>
-                    <a href="{% url 'make-reservation' gym.id slot %}" class="btn btn-primary">Reserve</a>
+    <!-- AM Time Slots Carousel -->
+    <h4 class="text-center mt-4">Available AM Time Slots</h4>
+    <div id="amCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="row">
+                    {% for slot in am_slots %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ slot|date:"h:i A" }}</h5>
+                                <a href="{% url 'make-reservation' gym.id slot %}" class="btn btn-primary">Reserve</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                    </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
-        {% empty %}
-        <p class="text-center">No available time slots at the moment.</p>
-        {% endfor %}
+        <a class="carousel-control-prev" href="#amCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#amCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+
+    <!-- PM Time Slots Carousel -->
+    <h4 class="text-center mt-4">Available PM Time Slots</h4>
+    <div id="pmCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="row">
+                    {% for slot in pm_slots %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ slot|date:"h:i A" }}</h5>
+                                <a href="{% url 'make-reservation' gym.id slot %}" class="btn btn-primary">Reserve</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                    </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#pmCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#pmCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
 
     <!-- Existing Reservations -->
@@ -32,7 +85,7 @@
         <div class="col-md-6 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ reservation.time_slot|date:"D, M d, Y" }} at {{ reservation.time_slot|time:"H:i" }}</h5>
+                    <h5 class="card-title">{{ reservation.time_slot|date:"D, M d, Y" }} at {{ reservation.time_slot|time:"h:i A" }}</h5>
                     <p class="card-text">Reserved for {{ reservation.gym.name }}</p>
                     <!-- Cancel Reservation Button -->
                     <a href="{% url 'cancel-reservation' reservation.id %}" class="btn btn-danger mt-3">Cancel Reservation</a>

@@ -79,21 +79,28 @@ def reservations(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
     current_time = timezone.now()
 
+    am_slots = []
+    pm_slots = []
+    
     # Fetch available time slots for the next 24 hours (20-minute intervals)
-    available_slots = []
     for i in range(72):  # 72 slots of 20 minutes in 24 hours
         slot_time = current_time + timedelta(minutes=20 * i)
         if not Reservation.objects.filter(gym=gym, time_slot=slot_time).exists():
-            available_slots.append(slot_time)
+            if slot_time.hour < 12:
+                am_slots.append(slot_time)
+            else:
+                pm_slots.append(slot_time)
 
     # Fetch existing reservations for the logged-in user
     reservations = Reservation.objects.filter(gym=gym, resident=request.user)
 
     return render(request, 'gym_reservation/reservations.html', {
         'gym': gym,
-        'available_slots': available_slots,
+        'am_slots': am_slots,
+        'pm_slots': pm_slots,
         'reservations': reservations
     })
+
 
 # Profile view for the logged-in user
 @login_required
