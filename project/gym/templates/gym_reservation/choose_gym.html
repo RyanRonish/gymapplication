@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Choose a Gym
+{% endblock %}
+
+{% block content %}
+<main class="container mt-4">
+    <h2 class="text-center">Choose a Gym for Reservations</h2>
+    <div class="row">
+        {% for gym in gyms %}
+        <div class="col-md-6 mb-4">
+            <div class="card text-center">
+                <img src="https://via.placeholder.com/400x200.png?text={{ gym.name }}" class="card-img-top" alt="{{ gym.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ gym.name }}</h5>
+                    <a href="{% url 'reservations' gym.id %}" class="btn btn-primary mt-3">View Reservations</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

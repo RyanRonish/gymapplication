@@ -20,7 +20,7 @@
         <ul class="navbar-nav mx-auto">
             <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">Home</a></li>
             <li class="nav-item"><a href="{% url 'gyms' %}" class="nav-link">Gyms</a></li>
-            <li class="nav-item"><a href="{% url 'reservations' %}" class="nav-link">Reservations</a></li>
+            <li class="nav-item"><a href="{% url 'choose_gym' %}" class="nav-link">Reservations</a></li>
             <li class="nav-item"><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
     
             {% if user.is_authenticated %}

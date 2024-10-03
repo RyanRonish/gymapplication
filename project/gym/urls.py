@@ -28,6 +28,8 @@ urlpatterns = [
     path('gym/<int:gym_id>/reserve/<str:time_slot>/', views.make_reservation, name='make-reservation'),
     path('reservation-success/', views.reservation_success, name='reservation-success'),
     path('reservation-failure/', views.reservation_failure, name='reservation-failure'),
+
+    path('choose-gym/', views.choose_gym, name='choose_gym'),
     
     # User authentication views
     path('login/', auth_views.LoginView.as_view(), name='login'),

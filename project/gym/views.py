@@ -119,3 +119,9 @@ def register(request):
         form = CustomUserCreationForm()
 
     return render(request, 'registration/register.html', {'form': form})
+
+@login_required
+def choose_gym(request):
+    gyms = Gym.objects.all()
+    return render(request, 'gym_reservation/choose_gym.html', {'gyms': gyms})
+
