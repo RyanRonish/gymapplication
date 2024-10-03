@@ -144,3 +144,14 @@ def reservation_success(request):
 
 def reservation_failure(request):
     return render(request, 'gym_reservation/reservation_failure.html')
+
+@login_required
+def cancel_reservation(request, reservation_id):
+    try:
+        # Find the reservation and ensure it belongs to the current user
+        reservation = Reservation.objects.get(id=reservation_id, resident=request.user)
+        reservation.delete()  # Delete the reservation
+        return redirect('reservations', gym_id=reservation.gym.id)
+    except Reservation.DoesNotExist:
+        # Handle the case where the reservation does not exist or is not owned by the user
+        return redirect('reservation-failure')

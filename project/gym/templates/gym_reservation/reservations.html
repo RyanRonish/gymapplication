@@ -33,7 +33,9 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">{{ reservation.time_slot|date:"D, M d, Y" }} at {{ reservation.time_slot|time:"H:i" }}</h5>
-                    <p class="card-text">Reserved by {{ reservation.resident.username }}</p>
+                    <p class="card-text">Reserved for {{ reservation.gym.name }}</p>
+                    <!-- Cancel Reservation Button -->
+                    <a href="{% url 'cancel-reservation' reservation.id %}" class="btn btn-danger mt-3">Cancel Reservation</a>
                 </div>
             </div>
         </div>
@@ -41,6 +43,7 @@
         <p class="text-center">You have no reservations yet.</p>
         {% endfor %}
     </div>
+    
 </main>
 {% endblock %}
 
