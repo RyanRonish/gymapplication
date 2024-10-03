@@ -85,6 +85,8 @@ def reservations(request, gym_id):
     # Fetch available time slots for the next 24 hours (20-minute intervals)
     for i in range(72):  # 72 slots of 20 minutes in 24 hours
         slot_time = current_time + timedelta(minutes=20 * i)
+        
+        # Check if the slot is already reserved by anyone else
         if not Reservation.objects.filter(gym=gym, time_slot=slot_time).exists():
             if slot_time.hour < 12:
                 am_slots.append(slot_time)
@@ -100,6 +102,7 @@ def reservations(request, gym_id):
         'pm_slots': pm_slots,
         'reservations': reservations
     })
+
 
 
 # Profile view for the logged-in user
