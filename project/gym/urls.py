@@ -20,20 +20,29 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    # Home page
     path('', views.home, name='home'),
+    
+    # Gyms page
     path('gyms/', views.gyms, name='gyms'),
-    path('reservations/<int:gym_id>/', views.reservations, name='reservations'),
-    path('profile/', views.profile, name='profile'),
+
+    # Choose gym page
+    path('choose-gym/', views.choose_gym, name='choose_gym'),
+
+    # Gym detail and reservation pages
     path('gym/<int:gym_id>/', views.gym_detail, name='gym-detail'),
+    path('reservations/<int:gym_id>/', views.reservations, name='reservations'),
     path('gym/<int:gym_id>/reserve/<str:time_slot>/', views.make_reservation, name='make-reservation'),
+
+    # Reservation outcome views
     path('reservation-success/', views.reservation_success, name='reservation-success'),
     path('reservation-failure/', views.reservation_failure, name='reservation-failure'),
 
-    path('choose-gym/', views.choose_gym, name='choose_gym'),
-    
-    # User authentication views
+    # User profile page
+    path('profile/', views.profile, name='profile'),
+
+    # Authentication routes
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

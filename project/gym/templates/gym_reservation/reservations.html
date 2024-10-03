@@ -5,23 +5,42 @@
 {% endblock %}
 
 {% block content %}
-    <main class="container mt-4">
-        <h2 class="text-center">Reservations for {{ gym.name }}</h2>
-        
-        <div class="row">
-            {% for reservation in reservations %}
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ reservation.time_slot|date:"D, M d, Y" }} at {{ reservation.time_slot|time:"H:i" }}</h5>
-                        <p class="card-text">Reserved by {{ reservation.resident.username }}</p>
-                    </div>
+<main class="container mt-4">
+    <h2 class="text-center">Reservations for {{ gym.name }}</h2>
+
+    <!-- Available Time Slots -->
+    <h4 class="text-center mt-4">Available Time Slots</h4>
+    <div class="row">
+        {% for slot in available_slots %}
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">{{ slot|date:"H:i" }}</h5>
+                    <a href="{% url 'make_reservation' gym.id slot %}" class="btn btn-primary">Reserve</a>
                 </div>
             </div>
-            {% empty %}
-            <p class="text-center">No reservations for {{ gym.name }} yet.</p>
-            {% endfor %}
         </div>
-    </main>
+        {% empty %}
+        <p class="text-center">No available time slots at the moment.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Existing Reservations -->
+    <h4 class="text-center mt-4">Your Existing Reservations</h4>
+    <div class="row">
+        {% for reservation in reservations %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ reservation.time_slot|date:"D, M d, Y" }} at {{ reservation.time_slot|time:"H:i" }}</h5>
+                    <p class="card-text">Reserved by {{ reservation.resident.username }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">You have no reservations yet.</p>
+        {% endfor %}
+    </div>
+</main>
 {% endblock %}
 
