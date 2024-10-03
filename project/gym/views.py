@@ -12,8 +12,23 @@ from .forms import CustomUserCreationForm, ProfileForm
 # Home view - accessible only by logged-in users
 @login_required
 def home(request):
-    gyms = Gym.objects.all()
-    return render(request, 'gym_reservation/home.html', {'gyms': gyms})
+    # Check if Gym 1 and Gym 2 are open or reserved
+    current_time = timezone.now()
+    
+    gym1_is_open = not Reservation.objects.filter(gym__name='Gym 1', time_slot__gte=current_time).exists()
+    gym2_is_open = not Reservation.objects.filter(gym__name='Gym 2', time_slot__gte=current_time).exists()
+    
+    gym1 = Gym.objects.get(name='Gym 1')
+    gym2 = Gym.objects.get(name='Gym 2')
+    
+    context = {
+        'gym1_is_open': gym1_is_open,
+        'gym2_is_open': gym2_is_open,
+        'gym1': gym1,
+        'gym2': gym2,
+    }
+    
+    return render(request, 'gym_reservation/home.html', context)
 
 # Gym detail view - accessible only by logged-in users
 @login_required
@@ -60,26 +75,12 @@ def reservation_failure(request):
 
 # View to show the user's reservations and handle calendar time slot selection
 @login_required
-def reservations(request):
-    reservations = Reservation.objects.filter(resident=request.user)
-    today = timezone.now().date()
+def reservations(request, gym_id):
+    gym = Gym.objects.get(id=gym_id)
+    reservations = Reservation.objects.filter(gym=gym, resident=request.user)
+    
+    return render(request, 'gym_reservation/reservations.html', {'reservations': reservations, 'gym': gym})
 
-    # Handle AJAX request for time slots
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        date_str = request.GET.get('date')
-        selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-
-        # Generate time slots for the selected date (9:00 AM to 5:00 PM, 20-minute intervals)
-        start_time = datetime.combine(selected_date, datetime.min.time()) + timedelta(hours=9)
-        slots = [(start_time + timedelta(minutes=20 * i)).strftime('%H:%M') for i in range(24)]
-
-        # Return available slots as JSON response
-        return JsonResponse({'slots': slots})
-
-    return render(request, 'gym_reservation/reservations.html', {
-        'reservations': reservations,
-        'today': today
-    })
 
 # Profile view for the logged-in user
 @login_required

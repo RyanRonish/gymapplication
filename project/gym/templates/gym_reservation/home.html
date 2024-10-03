@@ -15,8 +15,14 @@
                     <img src="https://via.placeholder.com/400x200.png?text=Gym+1" class="card-img-top" alt="Gym 1">
                     <div class="card-body">
                         <h5 class="card-title">Gym 1</h5>
-                        <div class="gym-status status-open">Open</div>
-                        <a href="#" class="btn btn-primary mt-3">Make a Reservation</a>
+                        <!-- Check if Gym 1 is open or reserved -->
+                        {% if gym1_is_open %}
+                            <div class="gym-status status-open bg-success text-white py-2">Open</div>
+                            <a href="{% url 'reservations' gym1.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
+                        {% else %}
+                            <div class="gym-status status-occupied bg-danger text-white py-2">Occupied</div>
+                            <a href="#" class="btn btn-primary mt-3 disabled">Make a Reservation</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -27,8 +33,14 @@
                     <img src="https://via.placeholder.com/400x200.png?text=Gym+2" class="card-img-top" alt="Gym 2">
                     <div class="card-body">
                         <h5 class="card-title">Gym 2</h5>
-                        <div class="gym-status status-occupied">Occupied</div>
-                        <a href="#" class="btn btn-primary mt-3 disabled">Make a Reservation</a>
+                        <!-- Check if Gym 2 is open or reserved -->
+                        {% if gym2_is_open %}
+                            <div class="gym-status status-open bg-success text-white py-2">Open</div>
+                            <a href="{% url 'reservations' gym2.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
+                        {% else %}
+                            <div class="gym-status status-occupied bg-danger text-white py-2">Occupied</div>
+                            <a href="#" class="btn btn-primary mt-3 disabled">Make a Reservation</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
