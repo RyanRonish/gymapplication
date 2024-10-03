@@ -3,9 +3,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from .models import Gym, Reservation
+from .forms import CustomUserCreationForm, ProfileForm
 
 # Home view - accessible only by logged-in users
 @login_required
@@ -56,47 +58,30 @@ def reservation_success(request):
 def reservation_failure(request):
     return render(request, 'gym_reservation/reservation_failure.html')
 
-# View to show the user's reservations
+# View to show the user's reservations and handle calendar time slot selection
 @login_required
 def reservations(request):
     reservations = Reservation.objects.filter(resident=request.user)
-    return render(request, 'gym_reservation/reservations.html', {'reservations': reservations})
+    today = timezone.now().date()
+
+    # Handle AJAX request for time slots
+    if request.is_ajax():
+        date_str = request.GET.get('date')
+        selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+
+        # Generate time slots for the selected date (9:00 AM to 5:00 PM, 20-minute intervals)
+        start_time = datetime.combine(selected_date, datetime.min.time()) + timedelta(hours=9)
+        slots = [(start_time + timedelta(minutes=20 * i)).strftime('%H:%M') for i in range(24)]
+
+        # Return available slots as JSON response
+        return JsonResponse({'slots': slots})
+
+    return render(request, 'gym_reservation/reservations.html', {
+        'reservations': reservations,
+        'today': today
+    })
 
 # Profile view for the logged-in user
-@login_required
-def profile(request):
-    user = request.user
-    return render(request, 'gym_reservation/profile.html', {'user': user})
-
-# View to list all gyms
-@login_required
-def gyms(request):
-    gyms = Gym.objects.all()
-    return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
-
-# User registration view
-from .forms import CustomUserCreationForm
-
-def register(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Create the user's profile with apartment number
-            user.profile.apartment_number = form.cleaned_data.get('apartment_number')
-            user.profile.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = CustomUserCreationForm()
-    
-    return render(request, 'registration/register.html', {'form': form})
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from .forms import ProfileForm  # Import the form created earlier
-
 @login_required
 def profile(request):
     if request.method == 'POST':
@@ -111,3 +96,25 @@ def profile(request):
         'form': form,
         'user': request.user
     })
+
+# View to list all gyms
+@login_required
+def gyms(request):
+    gyms = Gym.objects.all()
+    return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
+
+# User registration view
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Create the user's profile with apartment number
+            user.profile.apartment_number = form.cleaned_data.get('apartment_number')
+            user.profile.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'registration/register.html', {'form': form})
