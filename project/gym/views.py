@@ -65,7 +65,7 @@ def reservations(request):
     today = timezone.now().date()
 
     # Handle AJAX request for time slots
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         date_str = request.GET.get('date')
         selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
 
