@@ -8,23 +8,29 @@
     <main class="container mt-4">
         <h2 class="text-center">Gyms</h2>
         <div id="gymCarousel" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
             <ol class="carousel-indicators">
                 {% for gym in gyms %}
                     <li data-target="#gymCarousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
                 {% endfor %}
             </ol>
+
+            <!-- Wrapper for slides -->
             <div class="carousel-inner">
                 {% for gym in gyms %}
                     <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <img src="{{ gym.image_url }}" class="d-block w-100" alt="Gym {{ forloop.counter }}">
+                        <!-- Placeholder image or actual image from database -->
+                        <img src="{{ gym.image_url|default:'https://via.placeholder.com/1200x500.png?text=Gym+'|add:forloop.counter }}" class="d-block w-100" alt="Gym {{ forloop.counter }}">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>{{ gym.name }}</h5>
-                            <p>Status: <span class="badge {% if gym.is_available %}badge-success{% else %}badge-danger{% endif %}">{{ gym.status }}</span></p>
-                            <a href="{% if gym.is_available %}{% url 'make_reservation' gym.id %}{% endif %}" class="btn btn-primary {% if not gym.is_available %}disabled{% endif %}">Make a Reservation</a>
+                            <p>Status: <span class="badge {% if gym.is_available %}badge-success{% else %}badge-danger{% endif %}">{{ 'Open' if gym.is_available else 'Occupied' }}</span></p>
+                            <a href="{% if gym.is_available %}{% url 'make_reservation' gym.id %}{% else %}#{% endif %}" class="btn btn-primary {% if not gym.is_available %}disabled{% endif %}">Make a Reservation</a>
                         </div>
                     </div>
                 {% endfor %}
             </div>
+
+            <!-- Controls -->
             <a class="carousel-control-prev" href="#gymCarousel" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="sr-only">Previous</span>
@@ -36,4 +42,3 @@
         </div>
     </main>
 {% endblock %}
-
