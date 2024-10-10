@@ -167,5 +167,5 @@ def cancel_reservation(request, reservation_id):
         return redirect('reservation-failure')
 
 #def gym_status(request):
-    gyms = Gym.objects.all()  # Retrieve all gym statuses
-    return render(request, 'your_template.html', {'gyms': gyms})
+    #gyms = Gym.objects.all()  # Retrieve all gym statuses
+    #return render(request, 'your_template.html', {'gyms': gyms})
