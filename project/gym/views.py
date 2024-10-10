@@ -166,6 +166,6 @@ def cancel_reservation(request, reservation_id):
         # Handle the case where the reservation does not exist or is not owned by the user
         return redirect('reservation-failure')
 
-def gym_status(request):
+#def gym_status(request):
     gyms = Gym.objects.all()  # Retrieve all gym statuses
     return render(request, 'your_template.html', {'gyms': gyms})
