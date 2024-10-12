@@ -1,10 +1,13 @@
 /* style.css */
 
-/* Basic styles for the page */
-/* Custom Styles */
-
 body {
     background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif; /* Ensure text is legible and modern */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    min-height: 100vh; /* Ensure footer stays at the bottom on short pages */
+    display: flex;
+    flex-direction: column;
 }
 
 .card {
@@ -12,11 +15,13 @@ body {
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Add space between cards */
 }
 
 .card-img-top {
-    height: 200px;
+    height: auto; /* Change to auto for better aspect ratio control */
     object-fit: cover;
+    width: 100%; /* Ensure image covers the card properly */
 }
 
 .gym-status {
@@ -40,21 +45,54 @@ body {
     font-weight: bold;
     color: #fff;
     padding: 10px 15px;
-    border: 2px solid #007bff;
+    border: 2px solid transparent; /* Change to transparent for a cleaner look */
     margin: 0 5px;
     border-radius: 5px;
     text-transform: uppercase;
     transition: background-color 0.3s, color 0.3s;
 }
 
-.navbar-nav .nav-item .nav-link:hover {
-    background-color: #007bff;
+.navbar-nav .nav-item .nav-link:hover, .nav-item .nav-link:focus {
+    background-color: #007bff; /* Ensure consistency on focus too */
     color: #fff;
 }
 
 footer {
-    position: absolute;
+    position: relative; /* Change from absolute to relative for better flow */
     bottom: 0;
     width: 100%;
+    background: #333; /* Give footer a distinct background */
+    color: white; /* Change text color for better readability */
+    text-align: center;
+    padding: 10px 0; /* Padding for aesthetic */
 }
 
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+    .navbar-nav .nav-item .nav-link {
+        padding: 8px 10px; /* Smaller padding for smaller screens */
+    }
+
+    .card-img-top {
+        height: 150px; /* Smaller images on smaller screens */
+    }
+
+    .gym-status {
+        font-size: 16px; /* Slightly smaller font size for status */
+    }
+
+    footer {
+        padding: 8px 0; /* Less padding in footer on smaller screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-nav {
+        flex-direction: column; /* Stack nav items vertically on very small screens */
+    }
+
+    .navbar-nav .nav-item, .nav-link {
+        width: 100%; /* Full width nav links for easier touch */
+        text-align: center; /* Center align the text */
+    }
+}
