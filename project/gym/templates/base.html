@@ -12,30 +12,31 @@
 </head>
 <body>
     <!-- Header Section -->
-    <header class="bg-dark text-white text-center py-3">
+    <header class="bg-dark text-white text-center py-3 sticky-top">
         <h1>Ronish Apartment Gym Reservation System</h1>
     </header>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <ul class="navbar-nav mx-auto">
-            <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="{% url 'gyms' %}" class="nav-link">Gyms</a></li>
-            <li class="nav-item"><a href="{% url 'choose_gym' %}" class="nav-link">Reservations</a></li>
-            <li class="nav-item"><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="{% url 'gyms' %}" class="nav-link">Gyms</a></li>
+                <li class="nav-item"><a href="{% url 'choose_gym' %}" class="nav-link">Reservations</a></li>
+                <li class="nav-item"><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
     
-            {% if user.is_authenticated %}
-            <li class="nav-item">
-                <form method="POST" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-link nav-link" style="display: inline; padding: 0;">Logout</button>
-                </form>
-            </li>
-        {% else %}
-            <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Login</a></li>
-        {% endif %}
-        
-
-        </ul>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <form method="POST" action="{% url 'logout' %}" class="form-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link nav-link" style="display: inline; padding: 0;">Logout</button>
+                    </form>
+                </li>
+                {% else %}
+                <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
     
 
@@ -47,12 +48,9 @@
     </div>
 
     <!-- Footer Section -->
-    <footer class="bg-dark text-white text-center py-3">
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
         <p>&copy; 2024 Ronish Apartment Gym Reservation System</p>
     </footer>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap JS and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -60,3 +58,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
