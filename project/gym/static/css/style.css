@@ -58,7 +58,7 @@ body {
 }
 
 footer {
-    position: relative; /* Change from absolute to relative for better flow */
+    position: bottom; /* Change from absolute to relative for better flow */
     bottom: 0;
     width: 100%;
     background: #333; /* Give footer a distinct background */
