@@ -9,6 +9,42 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Custom CSS for enhancing the layout */
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0;
+        }
+
+        .navbar-nav .nav-link {
+            margin: 0 10px;
+            font-weight: 500;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            border-radius: 20px;
+        }
+
+        .footer {
+            margin-top: 40px;
+        }
+
+        .register-btn {
+            border-radius: 20px;
+        }
+
+        @media (max-width: 576px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header Section -->
@@ -42,20 +78,37 @@
         </div>
     </nav>
     
-
     <!-- Content Section -->
-    <div class="container mt-4">
+    <div class="container mt-5">
         <div class="row">
-            <div class="col-md-8 col-lg-6 mx-auto">
-                {% block content %}
-                <!-- This block will be replaced by content from child templates -->
-                {% endblock %}
+            <div class="col-md-6 col-lg-4 mx-auto">
+                <div class="card p-4">
+                    <div class="card-body">
+                        <h2 class="text-center">Login</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.username.label_tag }}
+                                {{ form.username }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.password.label_tag }}
+                                {{ form.password }}
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Login</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <p>Don't have an account?</p>
+                    <a href="{% url 'register' %}" class="btn btn-secondary register-btn">Register Here</a>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Footer Section -->
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <footer class="bg-dark text-white text-center py-3 footer">
         <p>&copy; 2024 Ronish Apartment Gym Reservation System</p>
     </footer>
 
