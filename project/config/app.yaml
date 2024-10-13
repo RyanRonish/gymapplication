@@ -1,0 +1,33 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+envs:
+- key: DEBUG
+  scope: RUN_AND_BUILD_TIME
+  value: "True"
+- key: DISABLE_COLLECTSTATIC
+  scope: RUN_AND_BUILD_TIME
+  value: "1"
+features:
+- buildpack-stack=ubuntu-22
+ingress:
+  rules:
+  - component:
+      name: gymapplication
+    match:
+      path:
+        prefix: /
+name: stingray-app
+region: nyc
+services:
+- environment_slug: python
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: RyanRonish/gymapplication
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: apps-s-1vcpu-0.5gb
+  name: gymapplication
+  run_command: gunicorn --worker-tmp-dir /dev/shm
+  source_dir: /
