@@ -1,0 +1,9 @@
+runtime: python3.11.5 # Use the Python version compatible with your app
+
+handlers:
+- url: /.*
+  script: auto
+  secure: always
+
+env_variables:
+  DJANGO_SETTINGS_MODULE: 'project.config.settings'  # Set to your settings module
