@@ -122,8 +122,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "gym/static",  # This ensures Django knows where to look for your static files
 ]
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+import os
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
