@@ -59,6 +59,7 @@ body {
 
 .content {
     flex: 1; /* Fills the remaining space */
+    min-height: 100vh;
 }
 
 footer {
