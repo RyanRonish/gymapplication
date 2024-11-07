@@ -57,6 +57,10 @@ body {
     color: #fff;
 }
 
+.content {
+    flex: 1; /* Fills the remaining space */
+}
+
 footer {
     position: bottom; /* Change from absolute to relative for better flow */
     bottom: 0;
