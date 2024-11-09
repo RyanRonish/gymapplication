@@ -1,9 +1,0 @@
-class calander():
-    import calendar
-
-    yy = int(input("Enter Year: YYYY"))
-    mm = int(input("Enter Month: MM"))
-
-
-    print(calendar.month(yy,mm))
-
