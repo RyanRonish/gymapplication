@@ -109,9 +109,7 @@ if POSTGRES_READY:
         }
     }
 
-DJANGO_SUPERUSER_EMAIL = ryan.ronish@unco.edu
-DJANGO_SUPERUSER_USERNAME = ryan1
-DJANGO_SUPERUSER_PASSWORD = RussellWestbrook
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
