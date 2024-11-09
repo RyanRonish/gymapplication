@@ -18,9 +18,13 @@ def home(request):
     gym1_is_open = not Reservation.objects.filter(gym__name='Gym 1', time_slot__gte=current_time).exists()
     gym2_is_open = not Reservation.objects.filter(gym__name='Gym 2', time_slot__gte=current_time).exists()
     
-    gym1 = Gym.objects.get(name='Gym 1')
-    gym2 = Gym.objects.get(name='Gym 2')
+    #gym1 = Gym.objects.get(name='Gym 1')
+    #gym2 = Gym.objects.get(name='Gym 2')
     
+    # Use get_object_or_404 to safely retrieve Gym 1 and Gym 2
+    gym1 = get_object_or_404(Gym, name='Gym 1')
+    gym2 = get_object_or_404(Gym, name='Gym 2')
+
     context = {
         'gym1_is_open': gym1_is_open,
         'gym2_is_open': gym2_is_open,
