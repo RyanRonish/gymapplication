@@ -1,9 +1,60 @@
-runtime: python3.11.5 # Use the Python version compatible with your app
-
-handlers:
-- url: /.*
-  script: auto
-  secure: always
-
-env_variables:
-  DJANGO_SETTINGS_MODULE: 'project.config.settings'  # Set to your settings module
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+databases:
+- engine: PG
+  name: db
+envs:
+- key: DISABLE_COLLECTSTATIC
+  scope: RUN_AND_BUILD_TIME
+  value: "1"
+features:
+- buildpack-stack=ubuntu-22
+ingress:
+  rules:
+  - component:
+      name: gymapplication-project-02
+    match:
+      path:
+        prefix: /
+name: hammerhead-app
+region: nyc
+services:
+- environment_slug: python
+  envs:
+  - key: DATABASE_ENGINE
+    scope: RUN_AND_BUILD_TIME
+    value: django.db.backends.sqlite3
+  - key: DATABASE_NAME
+    scope: RUN_AND_BUILD_TIME
+    value: config/db
+  - key: DATABASE_URL
+    scope: RUN_AND_BUILD_TIME
+    value: ${db.DATABASE_URL}
+  - key: POSTGRES_DB
+    scope: RUN_AND_BUILD_TIME
+    value: ${db.DATABASE}
+  - key: POSTGRES_HOST
+    scope: RUN_AND_BUILD_TIME
+    value: ${db.HOSTNAME}
+  - key: POSTGRES_USER
+    scope: RUN_AND_BUILD_TIME
+    value: ${db.USERNAME}
+  - key: POSTGRES_PASSWORD
+    scope: RUN_AND_BUILD_TIME
+    value: ${db.PASSWORD}
+  - key: POSTGRES_PORT
+    scope: RUN_AND_BUILD_TIME
+    value: ${db.PORT}
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: RyanRonish/gymapplication
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: apps-s-1vcpu-0.5gb
+  name: gymapplication-project-02
+  run_command: |-
+    gunicorn --worker-tmp-dir /dev/shm config.wsgi
+    python manage.py migrate --no-input
+  source_dir: project/02
