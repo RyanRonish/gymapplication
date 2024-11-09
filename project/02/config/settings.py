@@ -74,6 +74,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+from os import environ
+
 DATABASES = {
     "default": {
         "ENGINE": environ.get("DATABASE_ENGINE"),
