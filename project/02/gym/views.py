@@ -12,6 +12,10 @@ from .forms import CustomUserCreationForm, ProfileForm
 # Home view - accessible only by logged-in users
 @login_required
 def home(request):
+
+        # Ensure that Gym 1 and Gym 2 exist in the database
+    gym1, created1 = Gym.objects.get_or_create(name='Gym 1')
+    gym2, created2 = Gym.objects.get_or_create(name='Gym 2')
     # Check if Gym 1 and Gym 2 are open or reserved
     current_time = timezone.now()
     
@@ -22,8 +26,8 @@ def home(request):
     #gym2 = Gym.objects.get(name='Gym 2')
     
     # Use get_object_or_404 to safely retrieve Gym 1 and Gym 2
-    gym1 = get_object_or_404(Gym, name='Gym 1')
-    gym2 = get_object_or_404(Gym, name='Gym 2')
+    #gym1 = get_object_or_404(Gym, name='Gym 1')
+    #gym2 = get_object_or_404(Gym, name='Gym 2')
 
     context = {
         'gym1_is_open': gym1_is_open,
