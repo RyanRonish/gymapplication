@@ -24,10 +24,10 @@ services:
   envs:
   - key: DATABASE_ENGINE
     scope: RUN_AND_BUILD_TIME
-    value: django.db.backends.sqlite3
+    value: django.db.backends.postgresql
   - key: DATABASE_NAME
     scope: RUN_AND_BUILD_TIME
-    value: config/db
+    value: POSTGRES_DB
   - key: DATABASE_URL
     scope: RUN_AND_BUILD_TIME
     value: ${db.DATABASE_URL}
@@ -54,6 +54,6 @@ services:
   instance_count: 1
   instance_size_slug: apps-s-1vcpu-0.5gb
   name: gymapplication-project-02
-  run_command: |-
+  run_command: |
     gunicorn --worker-tmp-dir /dev/shm config.wsgi
   source_dir: project/02
