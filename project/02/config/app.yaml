@@ -56,5 +56,4 @@ services:
   name: gymapplication-project-02
   run_command: |-
     gunicorn --worker-tmp-dir /dev/shm config.wsgi
-    python manage.py migrate --no-input
   source_dir: project/02
