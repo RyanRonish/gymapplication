@@ -4,7 +4,7 @@ from django.utils import timezone
 
 class Gym(models.Model):
     name = models.CharField(max_length=100)
-    #is_occupied = models.BooleanField(default=False)  # Track whether the gym is manually set as occupied
+    is_occupied = models.BooleanField(default=False)  # Track whether the gym is manually set as occupied
 
     def __str__(self):
         return self.name
