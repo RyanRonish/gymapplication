@@ -10,24 +10,25 @@ from .models import Gym, Reservation
 from .forms import CustomUserCreationForm, ProfileForm
 
 # Home view - accessible only by logged-in users
+from django.utils import timezone
+
 @login_required
 def home(request):
-
-        # Ensure that Gym 1 and Gym 2 exist in the database
     gym1, created1 = Gym.objects.get_or_create(name='Gym 1')
     gym2, created2 = Gym.objects.get_or_create(name='Gym 2')
-    # Check if Gym 1 and Gym 2 are open or reserved
     current_time = timezone.now()
-    
-    gym1_is_open = not Reservation.objects.filter(gym__name='Gym 1', time_slot__gte=current_time).exists()
-    gym2_is_open = not Reservation.objects.filter(gym__name='Gym 2', time_slot__gte=current_time).exists()
-    
-    #gym1 = Gym.objects.get(name='Gym 1')
-    #gym2 = Gym.objects.get(name='Gym 2')
-    
-    # Use get_object_or_404 to safely retrieve Gym 1 and Gym 2
-    #gym1 = get_object_or_404(Gym, name='Gym 1')
-    #gym2 = get_object_or_404(Gym, name='Gym 2')
+
+    # Check if Gym 1 and Gym 2 are open or reserved
+    gym1_is_open = not Reservation.objects.filter(
+        gym__name='Gym 1', 
+        time_slot__lte=current_time, 
+        time_slot__gt=current_time - timedelta(minutes=20)
+    ).exists()
+    gym2_is_open = not Reservation.objects.filter(
+        gym__name='Gym 2', 
+        time_slot__lte=current_time, 
+        time_slot__gt=current_time - timedelta(minutes=20)
+    ).exists()
 
     context = {
         'gym1_is_open': gym1_is_open,
@@ -37,6 +38,7 @@ def home(request):
     }
     
     return render(request, 'gym_reservation/home.html', context)
+
 
 from datetime import datetime, timedelta
 
