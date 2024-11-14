@@ -38,11 +38,17 @@ def home(request):
     
     return render(request, 'gym_reservation/home.html', context)
 
+from datetime import datetime, timedelta
+
 # Gym detail view - accessible only by logged-in users
 @login_required
 def gym_detail(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
-    current_time = timezone.now()
+    current_time = timezone.now().replace(second=0, microsecond=0)
+    # Adjust current_time to the nearest next 20-minute mark
+    minutes_to_add = (20 - current_time.minute % 20) % 20
+    current_time += timedelta(minutes=minutes_to_add)
+
     available_slots = []
 
     # Generate 20-minute time slots for the next 24 hours
@@ -55,6 +61,7 @@ def gym_detail(request, gym_id):
         'gym': gym,
         'available_slots': available_slots
     })
+
 
 # View to handle making a reservation
 @login_required
@@ -85,7 +92,10 @@ def reservation_failure(request):
 @login_required
 def reservations(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
-    current_time = timezone.now()
+    current_time = timezone.now().replace(second=0, microsecond=0)
+    # Adjust current_time to the nearest next 20-minute mark
+    minutes_to_add = (20 - current_time.minute % 20) % 20
+    current_time += timedelta(minutes=minutes_to_add)
 
     am_slots = []
     pm_slots = []
