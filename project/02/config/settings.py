@@ -147,7 +147,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "gym/static",  # This ensures Django knows where to look for your static files
+    BASE_DIR / "02/static",  # This ensures Django knows where to look for your static files
 ]
 
 import os
