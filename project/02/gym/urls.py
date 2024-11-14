@@ -22,6 +22,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     # Home page
     path('', views.home, name='home'),
+
+    path('gym/<int:gym_id>/start_workout/', views.start_workout, name='start-workout'),
+    path('gym/<int:gym_id>/end_workout/', views.end_workout, name='end-workout'),
     
     # Gyms page
     path('gyms/', views.gyms, name='gyms'),

@@ -185,3 +185,19 @@ def cancel_reservation(request, reservation_id):
     except Reservation.DoesNotExist:
         # Handle the case where the reservation does not exist or is not owned by the user
         return redirect('reservation-failure')
+
+from django.shortcuts import redirect
+
+@login_required
+def start_workout(request, gym_id):
+    gym = Gym.objects.get(id=gym_id)
+    gym.is_occupied = True
+    gym.save()
+    return redirect('home')
+
+@login_required
+def end_workout(request, gym_id):
+    gym = Gym.objects.get(id=gym_id)
+    gym.is_occupied = False
+    gym.save()
+    return redirect('home')
