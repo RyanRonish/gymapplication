@@ -5,47 +5,45 @@
 {% endblock %}
 
 {% block content %}
-<!-- Main Content Section -->
-<main class="container mt-4">
-    <h1 class="text-center">Select a Gym</h1>
-    <div class="row">
-        <!-- First Gym Card -->
-        <div class="col-md-6 mb-4">
-            <div class="card text-center">
-                <img src="https://via.placeholder.com/400x200.png?text=Gym+1" class="card-img-top" alt="Gym 1">
-                <div class="card-body">
-                    <h5 class="card-title">Gym 1</h5>
-                    <!-- Check if Gym 1 is open or reserved -->
-                    {% if gym1.is_occupied %}
-                        <div class="gym-status status-occupied bg-danger text-white py-2">Occupied</div>
-                        <a href="{% url 'end-workout' gym1.id %}" class="btn btn-warning mt-3">I'm done</a>
-                    {% else %}
-                        <div class="gym-status status-open bg-success text-white py-2">Open</div>
-                        <a href="{% url 'start-workout' gym1.id %}" class="btn btn-secondary mt-3">I'm about to work out</a>
-                        <a href="{% url 'reservations' gym1.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
-                    {% endif %}
+    <!-- Main Content Section -->
+    <main class="container mt-4">
+        <h1 class="text-center">Select a Gym</h1>
+        <div class="row">
+            <!-- First Gym Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card text-center">
+                    <img src="https://via.placeholder.com/400x200.png?text=Gym+1" class="card-img-top" alt="Gym 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Gym 1</h5>
+                        <!-- Check if Gym 1 is open or reserved -->
+                        {% if gym1_is_open %}
+                            <div class="gym-status status-open bg-success text-white py-2">Open</div>
+                            <a href="{% url 'reservations' gym1.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
+                        {% else %}
+                            <div class="gym-status status-occupied bg-danger text-white py-2">Occupied</div>
+                            <a href="#" class="btn btn-primary mt-3 disabled">Make a Reservation</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Second Gym Card -->
-        <div class="col-md-6 mb-4">
-            <div class="card text-center">
-                <img src="https://via.placeholder.com/400x200.png?text=Gym+2" class="card-img-top" alt="Gym 2">
-                <div class="card-body">
-                    <h5 class="card-title">Gym 2</h5>
-                    <!-- Check if Gym 2 is open or reserved -->
-                    {% if gym2.is_occupied %}
-                        <div class="gym-status status-occupied bg-danger text-white py-2">Occupied</div>
-                        <a href="{% url 'end-workout' gym2.id %}" class="btn btn-warning mt-3">I'm done</a>
-                    {% else %}
-                        <div class="gym-status status-open bg-success text-white py-2">Open</div>
-                        <a href="{% url 'start-workout' gym2.id %}" class="btn btn-secondary mt-3">I'm about to work out</a>
-                        <a href="{% url 'reservations' gym2.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
-                    {% endif %}
+            <!-- Second Gym Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card text-center">
+                    <img src="https://via.placeholder.com/400x200.png?text=Gym+2" class="card-img-top" alt="Gym 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Gym 2</h5>
+                        <!-- Check if Gym 2 is open or reserved -->
+                        {% if gym2_is_open %}
+                            <div class="gym-status status-open bg-success text-white py-2">Open</div>
+                            <a href="{% url 'reservations' gym2.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
+                        {% else %}
+                            <div class="gym-status status-occupied bg-danger text-white py-2">Occupied</div>
+                            <a href="#" class="btn btn-primary mt-3 disabled">Make a Reservation</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</main>
-{% endblock %}
+    </main>
+{% endblock %} 

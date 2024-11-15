@@ -188,6 +188,7 @@ def cancel_reservation(request, reservation_id):
 
 from django.shortcuts import redirect
 
+"""
 @login_required
 def start_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
@@ -201,3 +202,5 @@ def end_workout(request, gym_id):
     gym.is_occupied = False
     gym.save()
     return redirect('home')
+
+"""
