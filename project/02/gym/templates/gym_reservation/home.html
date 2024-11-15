@@ -25,6 +25,10 @@
                         <!-- Check if Gym 1 is open or reserved -->
                         {% if gym1_is_open %}
                             <div class="gym-status status-open bg-success text-white py-2">Open</div>
+                            <div class="text-center mb-4">
+                                <a href="{% url 'gyms' %}" class="btn btn-info me-2">View My Reservations</a>
+                                <a href="{% url 'home' %}" class="btn btn-secondary">Back to Homepage</a>
+                            </div>
                             <a href="{% url 'reservations' gym1.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
                         {% else %}
                             <div class="gym-status status-occupied bg-danger text-white py-2">Occupied</div>
@@ -43,6 +47,10 @@
                         <!-- Check if Gym 2 is open or reserved -->
                         {% if gym2_is_open %}
                             <div class="gym-status status-open bg-success text-white py-2">Open</div>
+                            <div class="text-center mb-4">
+                                <a href="{% url 'gyms' %}" class="btn btn-info me-2">View My Reservations</a>
+                                <a href="{% url 'home' %}" class="btn btn-secondary">Back to Homepage</a>
+                            </div>
                             <a href="{% url 'reservations' gym2.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
                         {% else %}
                             <div class="gym-status status-occupied bg-danger text-white py-2">Occupied</div>
