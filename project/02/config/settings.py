@@ -80,6 +80,10 @@ DATABASES = {
     "default": {
         "ENGINE": environ.get("DATABASE_ENGINE"),
         "NAME": environ.get("DATABASE_NAME"),
+        "USER": environ.get("POSTGRES_USER"),
+        "PASSWORD": environ.get("POSTGRES_PASSWORD"),
+        "HOST": environ.get("POSTGRES_HOST"),
+        "PORT": environ.get("POSTGRES_PORT"),
     }
 }
 
@@ -108,7 +112,6 @@ if POSTGRES_READY:
             "PORT": POSTGRES_PORT,
         }
     }
-
 
 
 # Password validation
