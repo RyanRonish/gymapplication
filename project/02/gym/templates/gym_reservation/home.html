@@ -19,8 +19,8 @@
                         {% if gym1_is_open %}
                             <div class="gym-status status-open bg-success text-white py-2">Open</div>
                             <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                                <a href="{% url 'choose_gym' %}" class="btn btn-info me-2">View My Reservations</a>
-                                <a href="{% url 'gyms' %}" class="btn btn-secondary">View Gyms</a>
+                                <a href="{% url 'choose_gym' %}" class="btn btn-info me-2">I'm Working Out</a>
+                                <a href="{% url 'gyms' %}" class="btn btn-secondary">I'm Done Working out</a>
                             </div>
                             <a href="{% url 'reservations' gym1.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
                         {% else %}
