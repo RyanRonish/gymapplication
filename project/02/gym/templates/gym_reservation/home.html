@@ -19,8 +19,9 @@
                         {% if gym1_is_open %}
                             <div class="gym-status status-open bg-success text-white py-2">Open</div>
                             <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                                <a href="{% url 'choose_gym' %}" class="btn btn-info me-2">I'm Working Out</a>
-                                <a href="{% url 'gyms' %}" class="btn btn-secondary">I'm Done Working out</a>
+                                <a href="javascript:void(0)" class="btn btn-info start-workout-btn" data-gym-id="{{ gym1.id }}">I'm Working Out</a>
+                                <a href="javascript:void(0)" class="btn btn-secondary end-workout-btn" data-gym-id="{{ gym1.id }}">I'm Done Working Out</a>
+                                
                             </div>
                             <a href="{% url 'reservations' gym1.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
                         {% else %}
@@ -41,8 +42,9 @@
                         {% if gym2_is_open %}
                             <div class="gym-status status-open bg-success text-white py-2">Open</div>
                             <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                                <a href="{% url 'choose_gym' %}" class="btn btn-info me-2">View My Reservations</a>
-                                <a href="{% url 'gyms' %}" class="btn btn-secondary">View Gyms</a>
+                                <a href="javascript:void(0)" class="btn btn-info start-workout-btn" data-gym-id="{{ gym1.id }}">I'm Working Out</a>
+                                <a href="javascript:void(0)" class="btn btn-secondary end-workout-btn" data-gym-id="{{ gym1.id }}">I'm Done Working Out</a>
+
                             </div>
                             <a href="{% url 'reservations' gym2.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
                         {% else %}
@@ -54,4 +56,36 @@
             </div>
         </div>
     </main>
+
+        <!-- Including jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+        <!-- AJAX Script to Handle Gym Status Change -->
+        <script>
+        $(document).ready(function() {
+            $('.start-workout-btn').click(function() {
+                var btn = $(this);
+                var gymId = btn.data('gym-id');
+                $.ajax({
+                    url: '{% url 'start_workout' 0 %}'.replace('0', gymId),
+                    type: 'GET',
+                    success: function() {
+                        btn.closest('.card').find('.gym-status').removeClass('bg-success').addClass('bg-danger').text('Occupied');
+                    }
+                });
+            });
+    
+            $('.end-workout-btn').click(function() {
+                var btn = $(this);
+                var gymId = btn.data('gym-id');
+                $.ajax({
+                    url: '{% url 'end_workout' 0 %}'.replace('0', gymId),
+                    type: 'GET',
+                    success: function() {
+                        btn.closest('.card').find('.gym-status').removeClass('bg-danger').addClass('bg-success').text('Open');
+                    }
+                });
+            });
+        });
+        </script>
 {% endblock %} 
