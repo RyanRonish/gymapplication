@@ -187,18 +187,18 @@ def cancel_reservation(request, reservation_id):
         return redirect('reservation-failure')
 
 from django.shortcuts import redirect
-
+from django.http import JsonResponse
 
 @login_required
 def start_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
-    gym.is_occupied = True
+    gym.is_open = False
     gym.save()
-    return redirect('home')
+    return JsonResponse({'status': 'success'})
 
 @login_required
 def end_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
-    gym.is_occupied = False
+    gym.is_open = True
     gym.save()
-    return redirect('home')
+    return JsonResponse({'status': 'success'})
