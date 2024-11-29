@@ -60,46 +60,45 @@
         <!-- Including jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     
-        <!-- AJAX Script to Handle Gym Status Change -->
     <script>
-            $(document).ready(function() {
-                $('.start-workout-btn').click(function(event) {
-                    event.preventDefault(); // Prevent default link behavior
-                    var btn = $(this);
-                    var gymId = btn.data('gym-id');
-                    $.ajax({
-                        url: btn.data('url'),
-                        type: 'GET',
-                        success: function(response) {
-                            if (response.status === 'success') {
-                                var statusDiv = btn.closest('.card').find('.gym-status');
-                                statusDiv.removeClass('bg-success').addClass('bg-danger').text('Occupied');
-                            }
-                        },
-                        error: function() {
-                            alert('Failed to update gym status.');
+        $(document).ready(function() {
+            $('.start-workout-btn').click(function(event) {
+                event.preventDefault(); // Prevent default link behavior
+                var btn = $(this);
+                var gymId = btn.data('gym-id');
+                $.ajax({
+                    url: btn.data('url'),
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            var statusDiv = btn.closest('.card').find('.gym-status');
+                            statusDiv.removeClass('bg-success').addClass('bg-danger').text('Occupied');
                         }
-                    });
-                });
-        
-                $('.end-workout-btn').click(function(event) {
-                    event.preventDefault(); // Prevent default link behavior
-                    var btn = $(this);
-                    var gymId = btn.data('gym-id');
-                    $.ajax({
-                        url: btn.data('url'),
-                        type: 'GET',
-                        success: function(response) {
-                            if (response.status === 'success') {
-                                var statusDiv = btn.closest('.card').find('.gym-status');
-                                statusDiv.removeClass('bg-danger').addClass('bg-success').text('Open');
-                            }
-                        },
-                        error: function() {
-                            alert('Failed to update gym status.');
-                        }
-                    });
+                    },
+                    error: function() {
+                        alert('Failed to update gym status.');
+                    }
                 });
             });
+    
+            $('.end-workout-btn').click(function(event) {
+                event.preventDefault(); // Prevent default link behavior
+                var btn = $(this);
+                var gymId = btn.data('gym-id');
+                $.ajax({
+                    url: btn.data('url'),
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            var statusDiv = btn.closest('.card').find('.gym-status');
+                            statusDiv.removeClass('bg-danger').addClass('bg-success').text('Open');
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to update gym status.');
+                    }
+                });
+            });
+        });
     </script>
 {% endblock %} 
