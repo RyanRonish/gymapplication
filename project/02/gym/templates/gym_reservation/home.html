@@ -42,8 +42,8 @@
                         {% if gym2_is_open %}
                             <div class="gym-status status-open bg-success text-white py-2">Open</div>
                             <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                                <a href="#" class="btn btn-info start-workout-btn" data-gym-id="{{ gym2.id }}" data-url="{% url 'start_workout' gym1.id %}">I'm Working Out</a>
-                                <a href="#" class="btn btn-secondary end-workout-btn" data-gym-id="{{ gym2.id }}" data-url="{% url 'end_workout' gym1.id %}">I'm Done Working Out</a>
+                                <a href="#" class="btn btn-info start-workout-btn" data-gym-id="{{ gym2.id }}" data-url="{% url 'start_workout' gym2.id %}">I'm Working Out</a>
+                                <a href="#" class="btn btn-secondary end-workout-btn" data-gym-id="{{ gym2.id }}" data-url="{% url 'end_workout' gym2.id %}">I'm Done Working Out</a>                                
 
                             </div>
                             <a href="{% url 'reservations' gym2.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
@@ -61,33 +61,45 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     
         <!-- AJAX Script to Handle Gym Status Change -->
-    <script>
-        $(document).ready(function() {
-            $('.start-workout-btn').click(function() {
-                var btn = $(this);
-                var gymId = btn.data('gym-id');
-                $.ajax({
-                    url: btn.data('url'),
-                    type: 'GET',
-                    success: function() {
-                        var statusDiv = btn.closest('.card').find('.gym-status');
-                        statusDiv.removeClass('bg-success').addClass('bg-danger').text('Occupied');
-                    }
+        <script>
+            $(document).ready(function() {
+                $('.start-workout-btn').click(function(event) {
+                    event.preventDefault(); // Prevent default link behavior
+                    var btn = $(this);
+                    var gymId = btn.data('gym-id');
+                    $.ajax({
+                        url: btn.data('url'),
+                        type: 'GET',
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                var statusDiv = btn.closest('.card').find('.gym-status');
+                                statusDiv.removeClass('bg-success').addClass('bg-danger').text('Occupied');
+                            }
+                        },
+                        error: function() {
+                            alert('Failed to update gym status.');
+                        }
+                    });
+                });
+        
+                $('.end-workout-btn').click(function(event) {
+                    event.preventDefault(); // Prevent default link behavior
+                    var btn = $(this);
+                    var gymId = btn.data('gym-id');
+                    $.ajax({
+                        url: btn.data('url'),
+                        type: 'GET',
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                var statusDiv = btn.closest('.card').find('.gym-status');
+                                statusDiv.removeClass('bg-danger').addClass('bg-success').text('Open');
+                            }
+                        },
+                        error: function() {
+                            alert('Failed to update gym status.');
+                        }
+                    });
                 });
             });
-    
-            $('.end-workout-btn').click(function() {
-                var btn = $(this);
-                var gymId = btn.data('gym-id');
-                $.ajax({
-                    url: btn.data('url'),
-                    type: 'GET',
-                    success: function() {
-                        var statusDiv = btn.closest('.card').find('.gym-status');
-                        statusDiv.removeClass('bg-danger').addClass('bg-success').text('Open');
-                    }
-                });
-            });
-        });
-    </script>
+        </script>
 {% endblock %} 

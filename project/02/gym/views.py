@@ -188,17 +188,18 @@ def cancel_reservation(request, reservation_id):
 
 from django.shortcuts import redirect
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 @login_required
 def start_workout(request, gym_id):
-    gym = Gym.objects.get(id=gym_id)
+    gym = get_object_or_404(Gym, id=gym_id)
     gym.is_open = False
     gym.save()
-    return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'success', 'gym_id': gym_id, 'is_open': gym.is_open})
 
 @login_required
 def end_workout(request, gym_id):
-    gym = Gym.objects.get(id=gym_id)
+    gym = get_object_or_404(Gym, id=gym_id)
     gym.is_open = True
     gym.save()
-    return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'success', 'gym_id': gym_id, 'is_open': gym.is_open})
