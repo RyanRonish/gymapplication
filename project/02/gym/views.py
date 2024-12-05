@@ -125,19 +125,23 @@ def reservation_failure(request):
 # Gym Status (AJAX/JSON Views)
 # ----------------------------------------
 
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import Gym
+
 def start_workout(request, gym_id):
+    """Mark the gym as occupied."""
     gym = get_object_or_404(Gym, id=gym_id)
     gym.is_open = False
     gym.save()
-    return JsonResponse({'status': 'success', 'message': 'Gym marked as occupied'})
-
+    return JsonResponse({'status': 'success', 'gym_id': gym.id, 'is_open': False})
 
 def end_workout(request, gym_id):
+    """Mark the gym as open."""
     gym = get_object_or_404(Gym, id=gym_id)
     gym.is_open = True
     gym.save()
-    return JsonResponse({'status': 'success', 'message': 'Gym marked as open'})
-
+    return JsonResponse({'status': 'success', 'gym_id': gym.id, 'is_open': True})
 
 # ----------------------------------------
 # User Profile Views
