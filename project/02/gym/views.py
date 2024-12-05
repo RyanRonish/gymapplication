@@ -35,10 +35,10 @@ def home(request):
     ).exists()
 
     context = {
-        'gym1_is_open': gym1_is_open,
-        'gym2_is_open': gym2_is_open,
         'gym1': gym1,
+        'gym1_is_open': gym1.is_open,
         'gym2': gym2,
+        'gym2_is_open': gym2.is_open
     }
     return render(request, 'gym_reservation/home.html', context)
 
@@ -132,14 +132,14 @@ from .models import Gym
 @require_http_methods(["POST"])
 def start_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
-    gym.is_occupied = True
+    gym.is_occupied = False
     gym.save()
     return JsonResponse({'status': 'success', 'gym_open': False})
 
 @require_http_methods(["POST"])
 def end_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
-    gym.is_occupied = False
+    gym.is_occupied = True
     gym.save()
     return JsonResponse({'status': 'success', 'gym_open': True})
 
