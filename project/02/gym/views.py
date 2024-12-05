@@ -104,6 +104,31 @@ def cancel_reservation(request, reservation_id):
     reservation.delete()
     return redirect('reservations', gym_id=reservation.gym.id)
 
+@login_required
+def make_reservation(request, gym_id, time_slot):
+    gym = get_object_or_404(Gym, id=gym_id)
+    time_slot = parse_datetime(time_slot)
+
+    if time_slot is None or Reservation.objects.filter(gym=gym, time_slot=time_slot).exists():
+        return redirect('reservation-failure')
+
+    Reservation.objects.create(resident=request.user, gym=gym, time_slot=time_slot)
+    return redirect('reservation-success')
+
+
+def reservation_success(request):
+    return render(request, 'gym_reservation/reservation_success.html')
+
+
+def reservation_failure(request):
+    return render(request, 'gym_reservation/reservation_failure.html')
+
+@login_required
+def cancel_reservation(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id, resident=request.user)
+    reservation.delete()
+    return redirect('reservations', gym_id=reservation.gym.id)
+
 @require_http_methods(["POST"])
 def start_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
