@@ -63,7 +63,7 @@
     <script>
         $(document).ready(function () {
             // Connect to the WebSocket
-            const socket = new WebSocket('ws://' + window.location.host + '/ws/gym-status/');
+            const socket = new WebSocket('wss://' + window.location.host + '/ws/gym-status/');
 
             // Log WebSocket connection status
             socket.onopen = function () {
