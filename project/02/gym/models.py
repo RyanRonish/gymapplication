@@ -13,8 +13,8 @@ class Gym(models.Model):
     is_open = models.BooleanField(default=True)  # Tracks if the gym is available
     last_updated = models.DateTimeField(auto_now=True)  # Optional for tracking updates
 
-    def __str__(self):
-        return self.name
+    #def __str__(self):
+     #   return self.name
 
 
 # --------------------------------------
