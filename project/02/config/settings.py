@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "gym",
 ]
 
-ASGI_APPLICATION = 'config.asgi.application'
+ASGI_APPLICATION = 'gym.asgi.application'
 
 CHANNEL_LAYERS = {
     'default': {
