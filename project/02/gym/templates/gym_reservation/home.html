@@ -98,6 +98,15 @@
 </main>
 
 <script>
+    document.querySelector('main').addEventListener('click', function(event) {
+        if (event.target.matches("[id^='start-workout-']")) {
+            const gymId = event.target.dataset.gymId;
+            handleWorkoutAction(gymId, 'start');
+        } else if (event.target.matches("[id^='end-workout-']")) {
+            const gymId = event.target.dataset.gymId;
+            handleWorkoutAction(gymId, 'end');
+        }
+    });
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch initial gym statuses
         fetchInitialGymStatus();
