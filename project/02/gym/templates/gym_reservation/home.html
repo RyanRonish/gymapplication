@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Gym 1</h5>
                     <!-- Status Bar -->
-                    <div id="gym-status-1" class="gym-status 
+                    <div id="gym-status-{{ gym1.id }}" class="gym-status 
                                 {% if gym1_is_open %}
                                     bg-success text-white
                                 {% else %}
@@ -30,13 +30,13 @@
                     </div>
                     <!-- Buttons -->
                     <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                        <button id="start-workout-1" class="btn btn-info 
+                        <button id="start-workout-{{ gym1.id }}" class="btn btn-info 
                                 {% if not gym1_is_open %}d-none{% endif %}" 
                                 data-gym-id="{{ gym1.id }}" 
                                 data-url="{% url 'start_workout' gym1.id %}">
                             I'm Working Out
                         </button>
-                        <button id="end-workout-1" class="btn btn-secondary 
+                        <button id="end-workout-{{ gym1.id }}" class="btn btn-secondary 
                                 {% if gym1_is_open %}d-none{% endif %}" 
                                 data-gym-id="{{ gym1.id }}" 
                                 data-url="{% url 'end_workout' gym1.id %}">
@@ -44,7 +44,7 @@
                         </button>
                     </div>
                     <!-- Reservation Button -->
-                    <a href="{% url 'reservations' gym1.id %}" id="reservation-btn-1" class="btn btn-primary mt-3 
+                    <a href="{% url 'reservations' gym1.id %}" id="reservation-btn-{{ gym1.id }}" class="btn btn-primary mt-3 
                             {% if not gym1_is_open %}disabled{% endif %}">
                         Make a Reservation
                     </a>
@@ -59,7 +59,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Gym 2</h5>
                     <!-- Status Bar -->
-                    <div id="gym-status-2" class="gym-status 
+                    <div id="gym-status-{{ gym2.id }}" class="gym-status 
                                 {% if gym2_is_open %}
                                     bg-success text-white
                                 {% else %}
@@ -73,13 +73,13 @@
                     </div>
                     <!-- Buttons -->
                     <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                        <button id="start-workout-2" class="btn btn-info 
+                        <button id="start-workout-{{ gym2.id }}" class="btn btn-info 
                                 {% if not gym2_is_open %}d-none{% endif %}" 
                                 data-gym-id="{{ gym2.id }}" 
                                 data-url="{% url 'start_workout' gym2.id %}">
                             I'm Working Out
                         </button>
-                        <button id="end-workout-2" class="btn btn-secondary 
+                        <button id="end-workout-{{ gym2.id }}" class="btn btn-secondary 
                                 {% if gym2_is_open %}d-none{% endif %}" 
                                 data-gym-id="{{ gym2.id }}" 
                                 data-url="{% url 'end_workout' gym2.id %}">
@@ -87,7 +87,7 @@
                         </button>
                     </div>
                     <!-- Reservation Button -->
-                    <a href="{% url 'reservations' gym2.id %}" id="reservation-btn-2" class="btn btn-primary mt-3 
+                    <a href="{% url 'reservations' gym2.id %}" id="reservation-btn-{{ gym2.id }}" class="btn btn-primary mt-3 
                             {% if not gym2_is_open %}disabled{% endif %}">
                         Make a Reservation
                     </a>
@@ -98,62 +98,100 @@
 </main>
 
 <script>
+// A helper to get CSRF token from cookies (if using Django CSRF protection)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';').map(c => c.trim());
+        for (let cookie of cookies) {
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+// Fetch initial gym statuses when the DOM is ready
+document.addEventListener("DOMContentLoaded", function () {
+    fetchInitialGymStatus();
+
+    // Event delegation for start/end workout buttons
     document.querySelector('main').addEventListener('click', function(event) {
         if (event.target.matches("[id^='start-workout-']")) {
             const gymId = event.target.dataset.gymId;
-            handleWorkoutAction(gymId, 'start');
+            const url = event.target.dataset.url; // use the data-url from the button
+            handleWorkoutAction(gymId, url);
         } else if (event.target.matches("[id^='end-workout-']")) {
             const gymId = event.target.dataset.gymId;
-            handleWorkoutAction(gymId, 'end');
+            const url = event.target.dataset.url; // use the data-url from the button
+            handleWorkoutAction(gymId, url);
         }
     });
-    document.addEventListener("DOMContentLoaded", function () {
-        // Fetch initial gym statuses
-        fetchInitialGymStatus();
-    
-        const handleWorkoutAction = (gymId, action) => {
-            const url = `/gym/${gymId}/${action}/`;
-            fetch(url, { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    updateGymStatus(data, `gym-status-${gymId}`, `start-workout-${gymId}`, `end-workout-${gymId}`, `reservation-btn-${gymId}`);
-                })
-                .catch(error => console.error(`Error handling workout ${action}:`, error));
-        };
-    
-        document.querySelectorAll("[id^='start-workout-']").forEach(button => {
-            button.addEventListener('click', () => handleWorkoutAction(button.dataset.gymId, 'start'));
-        });
-    
-        document.querySelectorAll("[id^='end-workout-']").forEach(button => {
-            button.addEventListener('click', () => handleWorkoutAction(button.dataset.gymId, 'end'));
-        });
+});
+
+function handleWorkoutAction(gymId, url) {
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateGymStatus(data, `gym-status-${gymId}`, `start-workout-${gymId}`, `end-workout-${gymId}`, `reservation-btn-${gymId}`);
+    })
+    .catch(error => console.error(`Error handling workout action:`, error));
+}
+
+function fetchInitialGymStatus() {
+    // This assumes there's an endpoint like /gym/{id}/status/
+    // Make sure your backend provides this endpoint and returns a JSON response with `gym_open`.
+    document.querySelectorAll("[id^='gym-status-']").forEach(statusDiv => {
+        const gymId = statusDiv.id.split('-')[2];
+        const statusUrl = `/gym/${gymId}/status/`;
+        fetch(statusUrl)
+            .then(response => response.json())
+            .then(data => {
+                updateGymStatus(data, `gym-status-${gymId}`, `start-workout-${gymId}`, `end-workout-${gymId}`, `reservation-btn-${gymId}`);
+            })
+            .catch(error => console.error(`Error fetching initial gym status for Gym ${gymId}:`, error));
     });
-    
-    function fetchInitialGymStatus() {
-        document.querySelectorAll("[id^='gym-status-']").forEach(statusDiv => {
-            const gymId = statusDiv.id.split('-')[2];
-            fetch(`/gym/${gymId}/status/`)
-                .then(response => response.json())
-                .then(data => {
-                    updateGymStatus(data, `gym-status-${gymId}`, `start-workout-${gymId}`, `end-workout-${gymId}`, `reservation-btn-${gymId}`);
-                })
-                .catch(error => console.error(`Error fetching initial gym status for Gym ${gymId}:`, error));
-        });
+}
+
+function updateGymStatus(data, statusElementId, startButtonId, endButtonId, reservationButtonId) {
+    const statusElement = document.getElementById(statusElementId);
+    const startButton = document.getElementById(startButtonId);
+    const endButton = document.getElementById(endButtonId);
+    const reservationButton = document.getElementById(reservationButtonId);
+    const isOpen = data.gym_open; // Ensure that your backend returns {"gym_open": true/false}
+
+    statusElement.textContent = isOpen ? "Open" : "Occupied";
+    statusElement.className = `gym-status ${isOpen ? 'bg-success text-white' : 'bg-danger text-white'} py-2`;
+
+    // Toggle button visibility based on gym status
+    if (isOpen) {
+        startButton.classList.remove('d-none');
+        endButton.classList.add('d-none');
+    } else {
+        startButton.classList.add('d-none');
+        endButton.classList.remove('d-none');
     }
-    
-    function updateGymStatus(data, statusElementId, startButtonId, endButtonId, reservationButtonId) {
-        const statusElement = document.getElementById(statusElementId);
-        const startButton = document.getElementById(startButtonId);
-        const endButton = document.getElementById(endButtonId);
-        const reservationButton = document.getElementById(reservationButtonId);
-        const isOpen = data.gym_open;
-    
-        statusElement.textContent = isOpen ? "Open" : "Occupied";
-        statusElement.className = `gym-status ${isOpen ? 'bg-success text-white' : 'bg-danger text-white'} py-2`;
-        startButton.style.display = isOpen ? 'inline-block' : 'none';
-        endButton.style.display = isOpen ? 'none' : 'inline-block';
-        reservationButton.classList.toggle("disabled", !isOpen);
+
+    // Disable or enable the reservation button
+    if (isOpen) {
+        reservationButton.classList.remove("disabled");
+    } else {
+        reservationButton.classList.add("disabled");
     }
-    </script>
+}
+
+// Optional: If you want other users to see real-time changes without refresh,
+// consider polling every 30 seconds (or use WebSockets).
+// setInterval(fetchInitialGymStatus, 30000);
+</script>
 {% endblock %}
