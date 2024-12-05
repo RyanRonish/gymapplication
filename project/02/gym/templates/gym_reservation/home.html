@@ -30,13 +30,13 @@
                     </div>
                     <!-- Buttons -->
                     <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                        <button id="toggle-status" class="btn btn-info start-workout-btn 
+                        <button id="start-workout-1" class="btn btn-info 
                                 {% if not gym1_is_open %}d-none{% endif %}" 
                                 data-gym-id="{{ gym1.id }}" 
                                 data-url="{% url 'start_workout' gym1.id %}">
                             I'm Working Out
                         </button>
-                        <button id="end-workout-1" class="btn btn-secondary end-workout-btn 
+                        <button id="end-workout-1" class="btn btn-secondary 
                                 {% if gym1_is_open %}d-none{% endif %}" 
                                 data-gym-id="{{ gym1.id }}" 
                                 data-url="{% url 'end_workout' gym1.id %}">
@@ -73,13 +73,13 @@
                     </div>
                     <!-- Buttons -->
                     <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                        <button id="start-workout-2" class="btn btn-info start-workout-btn 
+                        <button id="start-workout-2" class="btn btn-info 
                                 {% if not gym2_is_open %}d-none{% endif %}" 
                                 data-gym-id="{{ gym2.id }}" 
                                 data-url="{% url 'start_workout' gym2.id %}">
                             I'm Working Out
                         </button>
-                        <button id="end-workout-2" class="btn btn-secondary end-workout-btn 
+                        <button id="end-workout-2" class="btn btn-secondary 
                                 {% if gym2_is_open %}d-none{% endif %}" 
                                 data-gym-id="{{ gym2.id }}" 
                                 data-url="{% url 'end_workout' gym2.id %}">
@@ -97,97 +97,62 @@
     </div>
 </main>
 
-<!-- Include jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-<script>
-    document.getElementById("toggle-status").addEventListener("click", function () {
-        const gymId = this.getAttribute("data-gym-id");
-        fetch(`/toggle-gym-status/${gymId}/`, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}",
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                this.textContent = data.is_occupied ? "I'm Done" : "I'm Working Out";
-            }
-        });
-    });
-</script>
-
-<!-- JavaScript Logic -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Gym 1 Buttons
-        const startWorkoutBtn1 = document.getElementById("start-workout-1");
-        const endWorkoutBtn1 = document.getElementById("end-workout-1");
-        const statusDiv1 = document.getElementById("gym-status-1");
-        const reservationBtn1 = document.getElementById("reservation-btn-1");
-
-        // Gym 2 Buttons
-        const startWorkoutBtn2 = document.getElementById("start-workout-2");
-        const endWorkoutBtn2 = document.getElementById("end-workout-2");
-        const statusDiv2 = document.getElementById("gym-status-2");
-        const reservationBtn2 = document.getElementById("reservation-btn-2");
-
-        function handleWorkoutStart(button, endButton, statusDiv, reservationBtn, gymId, url) {
+        function toggleGymStatus(action, startButton, endButton, statusDiv, reservationButton, url) {
             fetch(url, { method: "GET" })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === "success") {
-                        statusDiv.classList.remove("bg-success");
-                        statusDiv.classList.add("bg-danger");
-                        statusDiv.textContent = "Occupied";
-                        button.classList.add("d-none");
-                        endButton.classList.remove("d-none");
-                        reservationBtn.classList.add("disabled");
+                        const isOpen = action === "start" ? false : true;
+
+                        // Update status text and styles
+                        statusDiv.classList.toggle("bg-success", isOpen);
+                        statusDiv.classList.toggle("bg-danger", !isOpen);
+                        statusDiv.textContent = isOpen ? "Open" : "Occupied";
+
+                        // Toggle button visibility
+                        startButton.classList.toggle("d-none", !isOpen);
+                        endButton.classList.toggle("d-none", isOpen);
+
+                        // Enable/disable reservation button
+                        reservationButton.classList.toggle("disabled", !isOpen);
                     }
                 })
                 .catch(error => console.error("Error:", error));
         }
 
-        function handleWorkoutEnd(button, startButton, statusDiv, reservationBtn, gymId, url) {
-            fetch(url, { method: "GET" })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        statusDiv.classList.remove("bg-danger");
-                        statusDiv.classList.add("bg-success");
-                        statusDiv.textContent = "Open";
-                        button.classList.add("d-none");
-                        startButton.classList.remove("d-none");
-                        reservationBtn.classList.remove("disabled");
-                    }
-                })
-                .catch(error => console.error("Error:", error));
-        }
+        // Gym 1 logic
+        const startWorkout1 = document.getElementById("start-workout-1");
+        const endWorkout1 = document.getElementById("end-workout-1");
+        const status1 = document.getElementById("gym-status-1");
+        const reservation1 = document.getElementById("reservation-btn-1");
 
-        // Add event listeners for Gym 1
-        startWorkoutBtn1.addEventListener("click", function (e) {
+        startWorkout1.addEventListener("click", function (e) {
             e.preventDefault();
-            handleWorkoutStart(startWorkoutBtn1, endWorkoutBtn1, statusDiv1, reservationBtn1, 1, startWorkoutBtn1.getAttribute("data-url"));
+            toggleGymStatus("start", startWorkout1, endWorkout1, status1, reservation1, startWorkout1.getAttribute("data-url"));
         });
 
-        endWorkoutBtn1.addEventListener("click", function (e) {
+        endWorkout1.addEventListener("click", function (e) {
             e.preventDefault();
-            handleWorkoutEnd(endWorkoutBtn1, startWorkoutBtn1, statusDiv1, reservationBtn1, 1, endWorkoutBtn1.getAttribute("data-url"));
+            toggleGymStatus("end", startWorkout1, endWorkout1, status1, reservation1, endWorkout1.getAttribute("data-url"));
         });
 
-        // Add event listeners for Gym 2
-        startWorkoutBtn2.addEventListener("click", function (e) {
+        // Gym 2 logic
+        const startWorkout2 = document.getElementById("start-workout-2");
+        const endWorkout2 = document.getElementById("end-workout-2");
+        const status2 = document.getElementById("gym-status-2");
+        const reservation2 = document.getElementById("reservation-btn-2");
+
+        startWorkout2.addEventListener("click", function (e) {
             e.preventDefault();
-            handleWorkoutStart(startWorkoutBtn2, endWorkoutBtn2, statusDiv2, reservationBtn2, 2, startWorkoutBtn2.getAttribute("data-url"));
+            toggleGymStatus("start", startWorkout2, endWorkout2, status2, reservation2, startWorkout2.getAttribute("data-url"));
         });
 
-        endWorkoutBtn2.addEventListener("click", function (e) {
+        endWorkout2.addEventListener("click", function (e) {
             e.preventDefault();
-            handleWorkoutEnd(endWorkoutBtn2, startWorkoutBtn2, statusDiv2, reservationBtn2, 2, endWorkoutBtn2.getAttribute("data-url"));
+            toggleGymStatus("end", startWorkout2, endWorkout2, status2, reservation2, endWorkout2.getAttribute("data-url"));
         });
     });
 </script>
-
-<script src="{% static 'js/realtime.js' %}"></script>
 {% endblock %}
