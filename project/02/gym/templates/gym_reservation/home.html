@@ -61,44 +61,45 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     
     <script>
-        $(document).ready(function() {
-            $('.start-workout-btn').click(function(event) {
-                event.preventDefault(); // Prevent default link behavior
-                var btn = $(this);
-                var gymId = btn.data('gym-id');
-                $.ajax({
-                    url: btn.data('url'),
-                    type: 'GET',
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            var statusDiv = btn.closest('.card').find('.gym-status');
-                            statusDiv.removeClass('bg-success').addClass('bg-danger').text('Occupied');
-                        }
-                    },
-                    error: function() {
-                        alert('Failed to update gym status.');
-                    }
-                });
-            });
-    
-            $('.end-workout-btn').click(function(event) {
-                event.preventDefault(); // Prevent default link behavior
-                var btn = $(this);
-                var gymId = btn.data('gym-id');
-                $.ajax({
-                    url: btn.data('url'),
-                    type: 'GET',
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            var statusDiv = btn.closest('.card').find('.gym-status');
-                            statusDiv.removeClass('bg-danger').addClass('bg-success').text('Open');
-                        }
-                    },
-                    error: function() {
-                        alert('Failed to update gym status.');
-                    }
-                });
-            });
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/gym-status/');
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const gymId = data.gym_id;
+            const status = data.status;
+
+            // Update the gym status dynamically
+            const statusDiv = $(`.card:has([data-gym-id="${gymId}"])`).find('.gym-status');
+            if (status === 'open') {
+                statusDiv.removeClass('bg-danger').addClass('bg-success').text('Open');
+            } else if (status === 'occupied') {
+                statusDiv.removeClass('bg-success').addClass('bg-danger').text('Occupied');
+            }
+        };
+
+        $('.start-workout-btn').click(function(event) {
+            event.preventDefault();
+            const btn = $(this);
+            const gymId = btn.data('gym-id');
+
+            // Send status update to the WebSocket
+            socket.send(JSON.stringify({
+                'gym_id': gymId,
+                'status': 'occupied',
+            }));
         });
+
+        $('.end-workout-btn').click(function(event) {
+            event.preventDefault();
+            const btn = $(this);
+            const gymId = btn.data('gym-id');
+
+            // Send status update to the WebSocket
+            socket.send(JSON.stringify({
+                'gym_id': gymId,
+                'status': 'open',
+            }));
+        });
+
     </script>
 {% endblock %} 

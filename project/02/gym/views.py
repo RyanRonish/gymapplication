@@ -186,20 +186,18 @@ def cancel_reservation(request, reservation_id):
         # Handle the case where the reservation does not exist or is not owned by the user
         return redirect('reservation-failure')
 
-from django.shortcuts import redirect
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from .models import Gym
 
-@login_required
 def start_workout(request, gym_id):
     gym = get_object_or_404(Gym, id=gym_id)
     gym.is_open = False
     gym.save()
-    return JsonResponse({'status': 'success', 'gym_id': gym_id, 'is_open': gym.is_open})
+    return JsonResponse({'status': 'success', 'message': 'Gym marked as occupied'})
 
-@login_required
 def end_workout(request, gym_id):
     gym = get_object_or_404(Gym, id=gym_id)
     gym.is_open = True
     gym.save()
-    return JsonResponse({'status': 'success', 'gym_id': gym_id, 'is_open': gym.is_open})
+    return JsonResponse({'status': 'success', 'message': 'Gym marked as open'})
