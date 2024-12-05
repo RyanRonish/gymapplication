@@ -132,7 +132,7 @@ from .models import Gym
 @require_http_methods(["POST"])
 def start_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
-    gym.is_occupied = True
+    gym.is_occupied = False
     gym.save()
     return JsonResponse({'status': 'success', 'gym_open': False})
 
