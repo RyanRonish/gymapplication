@@ -1,31 +1,28 @@
 import json
-import logging
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from .models import Gym
 
-logger = logging.getLogger(__name__)
-
 class GymConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        logger.info("WebSocket connection established.")
+        # Add the WebSocket connection to the group
         await self.channel_layer.group_add("gym_updates", self.channel_name)
         await self.accept()
 
     async def disconnect(self, close_code):
-        logger.info(f"WebSocket disconnected: {close_code}")
+        # Remove the WebSocket connection from the group
         await self.channel_layer.group_discard("gym_updates", self.channel_name)
 
     async def receive(self, text_data):
-        logger.info(f"Message received: {text_data}")
+        # Parse incoming data
         data = json.loads(text_data)
         gym_id = data['gym_id']
-        status = data['status']
+        status = data['status']  # "open" or "occupied"
 
         # Update the database
         await self.update_gym_status(gym_id, status)
 
-        # Broadcast the update to the group
+        # Send the update to all users in the group
         await self.channel_layer.group_send(
             "gym_updates",
             {
@@ -36,6 +33,7 @@ class GymConsumer(AsyncWebsocketConsumer):
         )
 
     async def gym_status_update(self, event):
+        # Send the update to the WebSocket client
         await self.send(text_data=json.dumps({
             'gym_id': event['gym_id'],
             'status': event['status'],
@@ -43,6 +41,7 @@ class GymConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def update_gym_status(self, gym_id, status):
+        # Update the database to reflect the gym's status
         gym = Gym.objects.get(id=gym_id)
         gym.is_open = (status == 'open')
         gym.save()
