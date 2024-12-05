@@ -1,63 +1,51 @@
-$(document).ready(function () {
-    // Handle "I'm Working Out" button click
-    $('.start-workout-btn').click(function (event) {
-        event.preventDefault();
-        const btn = $(this);
-        const gymId = btn.data('gym-id');
+document.addEventListener("DOMContentLoaded", function () {
+    // Connect to the WebSocket
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/gym-status/');
 
-        // AJAX request to mark the gym as occupied
-        $.ajax({
-            url: btn.data('url'),
-            type: 'GET',
-            success: function (response) {
-                if (response.status === 'success') {
-                    // Update the gym status bar
-                    const statusDiv = btn.closest('.card').find('.gym-status');
-                    statusDiv.removeClass('bg-success').addClass('bg-danger').text('Occupied');
+    // Handle incoming WebSocket messages
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        const gymId = data.gym_id;
+        const status = data.status;
 
-                    // Toggle button visibility
-                    btn.addClass('d-none');
-                    btn.siblings('.end-workout-btn').removeClass('d-none');
+        // Update the UI for the gym
+        const statusDiv = document.getElementById(`gym-status-${gymId}`);
+        const startButton = document.getElementById(`start-workout-${gymId}`);
+        const endButton = document.getElementById(`end-workout-${gymId}`);
+        const reservationButton = document.getElementById(`reservation-btn-${gymId}`);
 
-                    // Disable the reservation button
-                    const reservationBtn = btn.closest('.card').find('.btn-primary');
-                    reservationBtn.addClass('disabled');
-                }
-            },
-            error: function () {
-                alert('Failed to start workout. Please try again.');
-            }
+        if (status === 'open') {
+            statusDiv.classList.remove("bg-danger");
+            statusDiv.classList.add("bg-success");
+            statusDiv.textContent = "Open";
+            startButton.classList.remove("d-none");
+            endButton.classList.add("d-none");
+            reservationButton.classList.remove("disabled");
+        } else if (status === 'occupied') {
+            statusDiv.classList.remove("bg-success");
+            statusDiv.classList.add("bg-danger");
+            statusDiv.textContent = "Occupied";
+            startButton.classList.add("d-none");
+            endButton.classList.remove("d-none");
+            reservationButton.classList.add("disabled");
+        }
+    };
+
+    // Handle button clicks for starting a workout
+    document.querySelectorAll('.start-workout-btn').forEach(function (button) {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            const gymId = this.getAttribute("data-gym-id");
+            socket.send(JSON.stringify({ gym_id: gymId, status: 'occupied' }));
         });
     });
 
-    // Handle "I'm Done Working Out" button click
-    $('.end-workout-btn').click(function (event) {
-        event.preventDefault();
-        const btn = $(this);
-        const gymId = btn.data('gym-id');
-
-        // AJAX request to mark the gym as open
-        $.ajax({
-            url: btn.data('url'),
-            type: 'GET',
-            success: function (response) {
-                if (response.status === 'success') {
-                    // Update the gym status bar
-                    const statusDiv = btn.closest('.card').find('.gym-status');
-                    statusDiv.removeClass('bg-danger').addClass('bg-success').text('Open');
-
-                    // Toggle button visibility
-                    btn.addClass('d-none');
-                    btn.siblings('.start-workout-btn').removeClass('d-none');
-
-                    // Enable the reservation button
-                    const reservationBtn = btn.closest('.card').find('.btn-primary');
-                    reservationBtn.removeClass('disabled');
-                }
-            },
-            error: function () {
-                alert('Failed to end workout. Please try again.');
-            }
+    // Handle button clicks for ending a workout
+    document.querySelectorAll('.end-workout-btn').forEach(function (button) {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            const gymId = this.getAttribute("data-gym-id");
+            socket.send(JSON.stringify({ gym_id: gymId, status: 'open' }));
         });
     });
 });
