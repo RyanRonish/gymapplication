@@ -2,6 +2,21 @@ document.addEventListener("DOMContentLoaded", function () {
     // Connect to the WebSocket
     const socket = new WebSocket('ws://' + window.location.host + '/ws/gym-status/');
 
+    gymStatusSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#gym-status').textContent = data.status ? 'Occupied' : 'Available';
+    };
+    
+    gymStatusSocket.onclose = function(e) {
+        console.error('Gym status socket closed unexpectedly');
+    };
+
+    function updateGymStatus(occupied) {
+        gymStatusSocket.send(JSON.stringify({
+            'status': occupied
+        }));
+    }
+
     // Handle incoming WebSocket messages
     socket.onmessage = function (event) {
         const data = JSON.parse(event.data);

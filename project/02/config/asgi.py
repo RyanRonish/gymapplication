@@ -14,6 +14,12 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from gym.routing import websocket_urlpatterns 
 import app.routing
+import os
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from django.core.asgi import get_asgi_application
+from django.urls import path
+from gym import consumers
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
@@ -21,7 +27,7 @@ application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     'websocket': AuthMiddlewareStack(
         URLRouter(
-            app.routing.websocket_urlpatterns
+            path("ws/gym_status/", consumers.GymStatusConsumer.as_asgi()),
         )
     ),
 })
