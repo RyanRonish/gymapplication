@@ -40,6 +40,11 @@ def gyms(request):
     gyms = Gym.objects.all()
     return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
 
+@login_required
+def choose_gym(request):
+    gyms = Gym.objects.all()
+    return render(request, 'gym_reservation/choose_gym.html', {'gyms': gyms})
+
 
 @login_required
 def gym_detail(request, gym_id):
