@@ -5,60 +5,86 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Main Content Section -->
     <main class="container mt-4">
         <h1 class="text-center">Select a Gym</h1>
         <div class="row">
-            <!-- Loop through both gyms to avoid duplicate code -->
-            {% for gym, is_open in gyms %}
+            <!-- Gym 1 Card -->
             <div class="col-md-6 mb-4">
                 <div class="card text-center">
-                    <img src="https://via.placeholder.com/400x200.png?text=Gym+{{ gym.id }}" class="card-img-top" alt="Gym {{ gym.id }}">
+                    <img src="https://via.placeholder.com/400x200.png?text=Gym+1" class="card-img-top" alt="Gym 1">
                     <div class="card-body">
-                        <h5 class="card-title">Gym {{ gym.id }}</h5>
-
-                        <!-- Gym Status Bar -->
+                        <h5 class="card-title">Gym 1</h5>
                         <div class="gym-status 
-                                    {% if is_open %}
+                                    {% if gym1_is_open %}
                                         bg-success text-white
                                     {% else %}
                                         bg-danger text-white
                                     {% endif %} py-2">
-                            {% if is_open %}
+                            {% if gym1_is_open %}
                                 Open
                             {% else %}
                                 Occupied
                             {% endif %}
                         </div>
-
-                        <!-- Action Buttons -->
                         <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                            <!-- Start Workout Button -->
                             <a href="#" class="btn btn-info start-workout-btn 
-                                {% if not is_open %}d-none{% endif %}" 
-                                data-gym-id="{{ gym.id }}" 
-                                data-url="{% url 'start_workout' gym.id %}">
+                                {% if not gym1_is_open %}d-none{% endif %}" 
+                                data-gym-id="{{ gym1.id }}" 
+                                data-url="{% url 'start_workout' gym1.id %}">
                                 I'm Working Out
                             </a>
-
-                            <!-- End Workout Button -->
                             <a href="#" class="btn btn-secondary end-workout-btn 
-                                {% if is_open %}d-none{% endif %}" 
-                                data-gym-id="{{ gym.id }}" 
-                                data-url="{% url 'end_workout' gym.id %}">
+                                {% if gym1_is_open %}d-none{% endif %}" 
+                                data-gym-id="{{ gym1.id }}" 
+                                data-url="{% url 'end_workout' gym1.id %}">
                                 I'm Done Working Out
                             </a>
                         </div>
-
-                        <!-- Reservation Button -->
-                        <a href="{% url 'reservations' gym.id %}" 
-                        class="btn btn-primary mt-3 {% if not is_open %}disabled{% endif %}">
-                        Make a Reservation
+                        <a href="{% url 'reservations' gym1.id %}" class="btn btn-primary mt-3 {% if not gym1_is_open %}disabled{% endif %}">
+                            Make a Reservation
                         </a>
                     </div>
                 </div>
             </div>
-            {% endfor %}
+
+            <!-- Gym 2 Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card text-center">
+                    <img src="https://via.placeholder.com/400x200.png?text=Gym+2" class="card-img-top" alt="Gym 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Gym 2</h5>
+                        <div class="gym-status 
+                                    {% if gym2_is_open %}
+                                        bg-success text-white
+                                    {% else %}
+                                        bg-danger text-white
+                                    {% endif %} py-2">
+                            {% if gym2_is_open %}
+                                Open
+                            {% else %}
+                                Occupied
+                            {% endif %}
+                        </div>
+                        <div class="text-center mb-4 d-flex justify-content-center gap-3">
+                            <a href="#" class="btn btn-info start-workout-btn 
+                                {% if not gym2_is_open %}d-none{% endif %}" 
+                                data-gym-id="{{ gym2.id }}" 
+                                data-url="{% url 'start_workout' gym2.id %}">
+                                I'm Working Out
+                            </a>
+                            <a href="#" class="btn btn-secondary end-workout-btn 
+                                {% if gym2_is_open %}d-none{% endif %}" 
+                                data-gym-id="{{ gym2.id }}" 
+                                data-url="{% url 'end_workout' gym2.id %}">
+                                I'm Done Working Out
+                            </a>
+                        </div>
+                        <a href="{% url 'reservations' gym2.id %}" class="btn btn-primary mt-3 {% if not gym2_is_open %}disabled{% endif %}">
+                            Make a Reservation
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
