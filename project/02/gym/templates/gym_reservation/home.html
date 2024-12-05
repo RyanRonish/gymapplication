@@ -23,7 +23,11 @@
                                     {% else %}
                                         bg-danger text-white
                                     {% endif %} py-2">
-                            {{ "Open" if gym1_is_open else "Occupied" }}
+                            {% if gym1_is_open %}
+                                Open
+                            {% else %}
+                                Occupied
+                            {% endif %}
                         </div>
 
                         <!-- Action Buttons -->
