@@ -208,3 +208,14 @@ def toggle_gym_status(request, gym_id):
         gym.is_occupied = not gym.is_occupied
         gym.save()
         return JsonResponse({"success": True, "is_occupied": gym.is_occupied})
+    
+from django.http import JsonResponse
+from .models import Gym
+
+def get_current_status_for_gym(request, gym_id):
+    try:
+        gym = Gym.objects.get(id=gym_id)
+        return JsonResponse({'status': 'success', 'gym_open': not gym.is_occupied})
+    except Gym.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Gym not found'}, status=404)
+
