@@ -30,7 +30,7 @@
                     </div>
                     <!-- Buttons -->
                     <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                        <button id="start-workout-1" class="btn btn-info start-workout-btn 
+                        <button id="toggle-status" class="btn btn-info start-workout-btn 
                                 {% if not gym1_is_open %}d-none{% endif %}" 
                                 data-gym-id="{{ gym1.id }}" 
                                 data-url="{% url 'start_workout' gym1.id %}">
@@ -99,6 +99,24 @@
 
 <!-- Include jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    document.getElementById("toggle-status").addEventListener("click", function () {
+        const gymId = this.getAttribute("data-gym-id");
+        fetch(`/toggle-gym-status/${gymId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.textContent = data.is_occupied ? "I'm Done" : "I'm Working Out";
+            }
+        });
+    });
+</script>
 
 <!-- JavaScript Logic -->
 <script>

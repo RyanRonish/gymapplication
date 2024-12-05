@@ -196,3 +196,15 @@ def gyms(request):
 def choose_gym(request):
     gyms = Gym.objects.all()
     return render(request, 'gym_reservation/choose_gym.html', {'gyms': gyms})
+
+# views.py
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
+from .models import Gym
+
+def toggle_gym_status(request, gym_id):
+    if request.method == "POST":
+        gym = get_object_or_404(Gym, id=gym_id)
+        gym.is_occupied = not gym.is_occupied
+        gym.save()
+        return JsonResponse({"success": True, "is_occupied": gym.is_occupied})
