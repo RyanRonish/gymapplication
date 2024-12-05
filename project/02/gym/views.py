@@ -36,6 +36,12 @@ def home(request):
     })
 
 @login_required
+def gyms(request):
+    gyms = Gym.objects.all()
+    return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
+
+
+@login_required
 def gym_detail(request, gym_id):
     gym = get_object_or_404(Gym, id=gym_id)
     current_time = timezone.now().replace(second=0, microsecond=0)
