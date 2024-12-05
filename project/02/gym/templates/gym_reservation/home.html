@@ -97,104 +97,54 @@
     </div>
 </main>
 
-<script src="static/js/gymStatus.js" defer></script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Fetch initial gym statuses
         fetchInitialGymStatus();
-        function toggleGymStatus(action, startButton, endButton, statusDiv, reservationButton, url) {
-            fetch(url, { method: "GET" })
+    
+        const handleWorkoutAction = (gymId, action) => {
+            const url = `/gym/${gymId}/${action}/`;
+            fetch(url, { method: 'POST' })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.status === "success") {
-                        const isOpen = action === "start" ? false : true;
-
-                        // Update status text and styles
-                        statusDiv.classList.toggle("bg-success", isOpen);
-                        statusDiv.classList.toggle("bg-danger", !isOpen);
-                        statusDiv.textContent = isOpen ? "Open" : "Occupied";
-
-                        // Toggle button visibility
-                        startButton.classList.toggle("d-none", !isOpen);
-                        endButton.classList.toggle("d-none", isOpen);
-
-                        // Enable/disable reservation button
-                        reservationButton.classList.toggle("disabled", !isOpen);
-                    }
+                    updateGymStatus(data, `gym-status-${gymId}`, `start-workout-${gymId}`, `end-workout-${gymId}`, `reservation-btn-${gymId}`);
                 })
-                .catch(error => console.error("Error:", error));
-        }
-
-        // Gym 1 logic
-        const startWorkout1 = document.getElementById("start-workout-1");
-        const endWorkout1 = document.getElementById("end-workout-1");
-        const status1 = document.getElementById("gym-status-1");
-        const reservation1 = document.getElementById("reservation-btn-1");
-
-        startWorkout1.addEventListener("click", function (e) {
-            e.preventDefault();
-            toggleGymStatus("start", startWorkout1, endWorkout1, status1, reservation1, startWorkout1.getAttribute("data-url"));
+                .catch(error => console.error(`Error handling workout ${action}:`, error));
+        };
+    
+        document.querySelectorAll("[id^='start-workout-']").forEach(button => {
+            button.addEventListener('click', () => handleWorkoutAction(button.dataset.gymId, 'start'));
         });
-
-        endWorkout1.addEventListener("click", function (e) {
-            e.preventDefault();
-            toggleGymStatus("end", startWorkout1, endWorkout1, status1, reservation1, endWorkout1.getAttribute("data-url"));
-        });
-
-        // Gym 2 logic
-        const startWorkout2 = document.getElementById("start-workout-2");
-        const endWorkout2 = document.getElementById("end-workout-2");
-        const status2 = document.getElementById("gym-status-2");
-        const reservation2 = document.getElementById("reservation-btn-2");
-
-        startWorkout2.addEventListener("click", function (e) {
-            e.preventDefault();
-            toggleGymStatus("start", startWorkout2, endWorkout2, status2, reservation2, startWorkout2.getAttribute("data-url"));
-        });
-
-        endWorkout2.addEventListener("click", function (e) {
-            e.preventDefault();
-            toggleGymStatus("end", startWorkout2, endWorkout2, status2, reservation2, endWorkout2.getAttribute("data-url"));
+    
+        document.querySelectorAll("[id^='end-workout-']").forEach(button => {
+            button.addEventListener('click', () => handleWorkoutAction(button.dataset.gymId, 'end'));
         });
     });
-
+    
     function fetchInitialGymStatus() {
-        // Fetch initial status for Gym 1
-        fetch('your_endpoint_to_get_current_status_for_gym1')
-            .then(response => response.json())
-            .then(data => {
-                updateGymStatus(data, "gym-status-1", "start-workout-1", "end-workout-1", "reservation-btn-1");
-            })
-            .catch(error => console.error("Error fetching initial gym status for Gym 1:", error));
-
-        // Fetch initial status for Gym 2
-        fetch('your_endpoint_to_get_current_status_for_gym2')
-            .then(response => response.json())
-            .then(data => {
-                updateGymStatus(data, "gym-status-2", "start-workout-2", "end-workout-2", "reservation-btn-2");
-            })
-            .catch(error => console.error("Error fetching initial gym status for Gym 2:", error));
+        document.querySelectorAll("[id^='gym-status-']").forEach(statusDiv => {
+            const gymId = statusDiv.id.split('-')[2];
+            fetch(`/gym/${gymId}/status/`)
+                .then(response => response.json())
+                .then(data => {
+                    updateGymStatus(data, `gym-status-${gymId}`, `start-workout-${gymId}`, `end-workout-${gymId}`, `reservation-btn-${gymId}`);
+                })
+                .catch(error => console.error(`Error fetching initial gym status for Gym ${gymId}:`, error));
+        });
     }
-
+    
     function updateGymStatus(data, statusElementId, startButtonId, endButtonId, reservationButtonId) {
         const statusElement = document.getElementById(statusElementId);
         const startButton = document.getElementById(startButtonId);
         const endButton = document.getElementById(endButtonId);
         const reservationButton = document.getElementById(reservationButtonId);
         const isOpen = data.gym_open;
-
-        // Update status text and styles
-        statusElement.classList.toggle("bg-success", isOpen);
-        statusElement.classList.toggle("bg-danger", !isOpen);
+    
         statusElement.textContent = isOpen ? "Open" : "Occupied";
-
-        // Toggle button visibility
-        startButton.classList.toggle("d-none", !isOpen);
-        endButton.classList.toggle("d-none", isOpen);
-
-        // Enable/disable reservation button
+        statusElement.className = `gym-status ${isOpen ? 'bg-success text-white' : 'bg-danger text-white'} py-2`;
+        startButton.style.display = isOpen ? 'inline-block' : 'none';
+        endButton.style.display = isOpen ? 'none' : 'inline-block';
         reservationButton.classList.toggle("disabled", !isOpen);
     }
-
-</script>
+    </script>
 {% endblock %}

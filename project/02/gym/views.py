@@ -126,22 +126,28 @@ def reservation_failure(request):
 # ----------------------------------------
 
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_http_methods
 from .models import Gym
 
+@require_http_methods(["POST"])
 def start_workout(request, gym_id):
-    """Mark the gym as occupied."""
-    gym = get_object_or_404(Gym, id=gym_id)
-    gym.is_open = False
+    gym = Gym.objects.get(id=gym_id)
+    gym.is_occupied = True
     gym.save()
-    return JsonResponse({'status': 'success', 'gym_id': gym.id, 'is_open': False})
+    return JsonResponse({'status': 'success', 'gym_open': False})
 
+@require_http_methods(["POST"])
 def end_workout(request, gym_id):
-    """Mark the gym as open."""
-    gym = get_object_or_404(Gym, id=gym_id)
-    gym.is_open = True
+    gym = Gym.objects.get(id=gym_id)
+    gym.is_occupied = False
     gym.save()
-    return JsonResponse({'status': 'success', 'gym_id': gym.id, 'is_open': True})
+    return JsonResponse({'status': 'success', 'gym_open': True})
+
+@require_http_methods(["GET"])
+def get_gym_status(request, gym_id):
+    gym = Gym.objects.get(id=gym_id)
+    return JsonResponse({'status': 'success', 'gym_open': not gym.is_occupied})
+
 
 # ----------------------------------------
 # User Profile Views

@@ -24,8 +24,9 @@ urlpatterns = [
     path('', views.home, name='home'),
 
     # Status change 
-    path('start_workout/<int:gym_id>/', views.start_workout, name='start_workout'),
-    path('end_workout/<int:gym_id>/', views.end_workout, name='end_workout'),
+    path('gym/<int:gym_id>/start/', views.start_workout, name='start_workout'),
+    path('gym/<int:gym_id>/end/', views.end_workout, name='end_workout'),
+    path('gym/<int:gym_id>/status/', views.get_gym_status, name='get_gym_status'),
     
     # Gyms page
     path('gyms/', views.gyms, name='gyms'),
