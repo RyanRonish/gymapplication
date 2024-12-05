@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from .models import Gym, Reservation
 from .forms import CustomUserCreationForm, ProfileForm
+from django.contrib.auth.decorators import login_required
 
 @login_required
 def home(request):
