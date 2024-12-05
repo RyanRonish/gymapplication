@@ -1,32 +1,36 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
+from datetime import timedelta
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from datetime import timedelta, datetime
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 from .models import Gym, Reservation
 from .forms import CustomUserCreationForm, ProfileForm
 
-# Home view - accessible only by logged-in users
-from django.utils import timezone
+
+# ----------------------------------------
+# Home View
+# ----------------------------------------
 
 @login_required
 def home(request):
-    gym1, created1 = Gym.objects.get_or_create(name='Gym 1')
-    gym2, created2 = Gym.objects.get_or_create(name='Gym 2')
+    # Ensure Gym 1 and Gym 2 exist
+    gym1, _ = Gym.objects.get_or_create(name='Gym 1')
+    gym2, _ = Gym.objects.get_or_create(name='Gym 2')
     current_time = timezone.now()
 
-    # Check if Gym 1 and Gym 2 are open or reserved
+    # Determine if Gym 1 and Gym 2 are open
     gym1_is_open = not Reservation.objects.filter(
-        gym__name='Gym 1', 
-        time_slot__lte=current_time, 
+        gym=gym1,
+        time_slot__lte=current_time,
         time_slot__gt=current_time - timedelta(minutes=20)
     ).exists()
+
     gym2_is_open = not Reservation.objects.filter(
-        gym__name='Gym 2', 
-        time_slot__lte=current_time, 
+        gym=gym2,
+        time_slot__lte=current_time,
         time_slot__gt=current_time - timedelta(minutes=20)
     ).exists()
 
@@ -36,28 +40,25 @@ def home(request):
         'gym1': gym1,
         'gym2': gym2,
     }
-    
     return render(request, 'gym_reservation/home.html', context)
 
 
-from datetime import datetime, timedelta
+# ----------------------------------------
+# Gym Detail and Reservations Views
+# ----------------------------------------
 
-# Gym detail view - accessible only by logged-in users
 @login_required
 def gym_detail(request, gym_id):
-    gym = Gym.objects.get(id=gym_id)
+    gym = get_object_or_404(Gym, id=gym_id)
     current_time = timezone.now().replace(second=0, microsecond=0)
-    # Adjust current_time to the nearest next 20-minute mark
     minutes_to_add = (20 - current_time.minute % 20) % 20
     current_time += timedelta(minutes=minutes_to_add)
 
-    available_slots = []
-
-    # Generate 20-minute time slots for the next 24 hours
-    for i in range(72):  # 72 slots of 20 minutes in 24 hours
-        slot_time = current_time + timedelta(minutes=20 * i)
-        if not Reservation.objects.filter(gym=gym, time_slot=slot_time).exists():
-            available_slots.append(slot_time)
+    available_slots = [
+        current_time + timedelta(minutes=20 * i)
+        for i in range(72)  # 72 slots for 24 hours
+        if not Reservation.objects.filter(gym=gym, time_slot=current_time + timedelta(minutes=20 * i)).exists()
+    ]
 
     return render(request, 'gym_reservation/gym_detail.html', {
         'gym': gym,
@@ -65,67 +66,83 @@ def gym_detail(request, gym_id):
     })
 
 
-# View to handle making a reservation
-@login_required
-def make_reservation(request, gym_id, time_slot):
-    gym = Gym.objects.get(id=gym_id)
-    time_slot = parse_datetime(time_slot)  # Automatically parses the time string
-    
-    # If the time slot is invalid or cannot be parsed, return an error
-    if time_slot is None:
-        return redirect('reservation-failure')
-    
-    # Check if the time slot is available
-    if not Reservation.objects.filter(gym=gym, time_slot=time_slot).exists():
-        reservation = Reservation(resident=request.user, gym=gym, time_slot=time_slot)
-        reservation.save()
-        return redirect('reservation-success')
-    
-    return redirect('reservation-failure')
-
-# Success and failure views for reservation outcomes
-def reservation_success(request):
-    return render(request, 'gym_reservation/reservation_success.html')
-
-def reservation_failure(request):
-    return render(request, 'gym_reservation/reservation_failure.html')
-
-# View to show the user's reservations and handle calendar time slot selection
 @login_required
 def reservations(request, gym_id):
-    gym = Gym.objects.get(id=gym_id)
+    gym = get_object_or_404(Gym, id=gym_id)
     current_time = timezone.now().replace(second=0, microsecond=0)
-    # Adjust current_time to the nearest next 20-minute mark
     minutes_to_add = (20 - current_time.minute % 20) % 20
     current_time += timedelta(minutes=minutes_to_add)
 
-    am_slots = []
-    pm_slots = []
-    
-    # Fetch available time slots for the next 24 hours (20-minute intervals)
-    for i in range(72):  # 72 slots of 20 minutes in 24 hours
+    am_slots, pm_slots = [], []
+
+    # Fetch available time slots for the next 24 hours
+    for i in range(72):  # 72 slots for 24 hours
         slot_time = current_time + timedelta(minutes=20 * i)
-        
-        # Check if the slot is already reserved by anyone else
         if not Reservation.objects.filter(gym=gym, time_slot=slot_time).exists():
             if slot_time.hour < 12:
                 am_slots.append(slot_time)
             else:
                 pm_slots.append(slot_time)
 
-    # Fetch existing reservations for the logged-in user
-    reservations = Reservation.objects.filter(gym=gym, resident=request.user)
+    user_reservations = Reservation.objects.filter(gym=gym, resident=request.user)
 
     return render(request, 'gym_reservation/reservations.html', {
         'gym': gym,
         'am_slots': am_slots,
         'pm_slots': pm_slots,
-        'reservations': reservations
+        'reservations': user_reservations
     })
 
 
+@login_required
+def make_reservation(request, gym_id, time_slot):
+    gym = get_object_or_404(Gym, id=gym_id)
+    time_slot = parse_datetime(time_slot)
 
-# Profile view for the logged-in user
+    if time_slot is None or Reservation.objects.filter(gym=gym, time_slot=time_slot).exists():
+        return redirect('reservation-failure')
+
+    Reservation.objects.create(resident=request.user, gym=gym, time_slot=time_slot)
+    return redirect('reservation-success')
+
+
+@login_required
+def cancel_reservation(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id, resident=request.user)
+    reservation.delete()
+    return redirect('reservations', gym_id=reservation.gym.id)
+
+
+def reservation_success(request):
+    return render(request, 'gym_reservation/reservation_success.html')
+
+
+def reservation_failure(request):
+    return render(request, 'gym_reservation/reservation_failure.html')
+
+
+# ----------------------------------------
+# Gym Status (AJAX/JSON Views)
+# ----------------------------------------
+
+def start_workout(request, gym_id):
+    gym = get_object_or_404(Gym, id=gym_id)
+    gym.is_open = False
+    gym.save()
+    return JsonResponse({'status': 'success', 'message': 'Gym marked as occupied'})
+
+
+def end_workout(request, gym_id):
+    gym = get_object_or_404(Gym, id=gym_id)
+    gym.is_open = True
+    gym.save()
+    return JsonResponse({'status': 'success', 'message': 'Gym marked as open'})
+
+
+# ----------------------------------------
+# User Profile Views
+# ----------------------------------------
+
 @login_required
 def profile(request):
     if request.method == 'POST':
@@ -141,19 +158,16 @@ def profile(request):
         'user': request.user
     })
 
-# View to list all gyms
-@login_required
-def gyms(request):
-    gyms = Gym.objects.all()
-    return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
 
-# User registration view
+# ----------------------------------------
+# User Authentication and Registration Views
+# ----------------------------------------
+
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Create the user's profile with apartment number
             user.profile.apartment_number = form.cleaned_data.get('apartment_number')
             user.profile.save()
             login(request, user)
@@ -163,41 +177,18 @@ def register(request):
 
     return render(request, 'registration/register.html', {'form': form})
 
-# View to let the user choose a gym
+
+# ----------------------------------------
+# Gym Listing and Selection Views
+# ----------------------------------------
+
+@login_required
+def gyms(request):
+    gyms = Gym.objects.all()
+    return render(request, 'gym_reservation/gyms.html', {'gyms': gyms})
+
+
 @login_required
 def choose_gym(request):
     gyms = Gym.objects.all()
     return render(request, 'gym_reservation/choose_gym.html', {'gyms': gyms})
-
-def reservation_success(request):
-    return render(request, 'gym_reservation/reservation_success.html')
-
-def reservation_failure(request):
-    return render(request, 'gym_reservation/reservation_failure.html')
-
-@login_required
-def cancel_reservation(request, reservation_id):
-    try:
-        # Find the reservation and ensure it belongs to the current user
-        reservation = Reservation.objects.get(id=reservation_id, resident=request.user)
-        reservation.delete()  # Delete the reservation
-        return redirect('reservations', gym_id=reservation.gym.id)
-    except Reservation.DoesNotExist:
-        # Handle the case where the reservation does not exist or is not owned by the user
-        return redirect('reservation-failure')
-
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from .models import Gym
-
-def start_workout(request, gym_id):
-    gym = get_object_or_404(Gym, id=gym_id)
-    gym.is_open = False
-    gym.save()
-    return JsonResponse({'status': 'success', 'message': 'Gym marked as occupied'})
-
-def end_workout(request, gym_id):
-    gym = get_object_or_404(Gym, id=gym_id)
-    gym.is_open = True
-    gym.save()
-    return JsonResponse({'status': 'success', 'message': 'Gym marked as open'})

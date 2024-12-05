@@ -9,21 +9,22 @@
     <main class="container mt-4">
         <h1 class="text-center">Select a Gym</h1>
         <div class="row">
-            <!-- First Gym Card -->
+            <!-- Loop through both gyms to avoid duplicate code -->
+            {% for gym, is_open in gyms %}
             <div class="col-md-6 mb-4">
                 <div class="card text-center">
-                    <img src="https://via.placeholder.com/400x200.png?text=Gym+1" class="card-img-top" alt="Gym 1">
+                    <img src="https://via.placeholder.com/400x200.png?text=Gym+{{ gym.id }}" class="card-img-top" alt="Gym {{ gym.id }}">
                     <div class="card-body">
-                        <h5 class="card-title">Gym 1</h5>
+                        <h5 class="card-title">Gym {{ gym.id }}</h5>
 
                         <!-- Gym Status Bar -->
                         <div class="gym-status 
-                                    {% if gym1_is_open %}
+                                    {% if is_open %}
                                         bg-success text-white
                                     {% else %}
                                         bg-danger text-white
                                     {% endif %} py-2">
-                            {% if gym1_is_open %}
+                            {% if is_open %}
                                 Open
                             {% else %}
                                 Occupied
@@ -34,56 +35,34 @@
                         <div class="text-center mb-4 d-flex justify-content-center gap-3">
                             <!-- Start Workout Button -->
                             <a href="#" class="btn btn-info start-workout-btn 
-                                {% if not gym1_is_open %}d-none{% endif %}" 
-                                data-gym-id="{{ gym1.id }}" 
-                                data-url="{% url 'start_workout' gym1.id %}">
+                                {% if not is_open %}d-none{% endif %}" 
+                                data-gym-id="{{ gym.id }}" 
+                                data-url="{% url 'start_workout' gym.id %}">
                                 I'm Working Out
                             </a>
 
                             <!-- End Workout Button -->
                             <a href="#" class="btn btn-secondary end-workout-btn 
-                                {% if gym1_is_open %}d-none{% endif %}" 
-                                data-gym-id="{{ gym1.id }}" 
-                                data-url="{% url 'end_workout' gym1.id %}">
+                                {% if is_open %}d-none{% endif %}" 
+                                data-gym-id="{{ gym.id }}" 
+                                data-url="{% url 'end_workout' gym.id %}">
                                 I'm Done Working Out
                             </a>
                         </div>
 
                         <!-- Reservation Button -->
-                        <a href="{% url 'reservations' gym1.id %}" 
-                        class="btn btn-primary mt-3 {% if not gym1_is_open %}disabled{% endif %}">
+                        <a href="{% url 'reservations' gym.id %}" 
+                        class="btn btn-primary mt-3 {% if not is_open %}disabled{% endif %}">
                         Make a Reservation
                         </a>
                     </div>
                 </div>
             </div>
-
-            <!-- Second Gym Card -->
-            <div class="col-md-6 mb-4">
-                <div class="card text-center">
-                    <img src="https://via.placeholder.com/400x200.png?text=Gym+2" class="card-img-top" alt="Gym 2">
-                    <div class="card-body">
-                        <h5 class="card-title">Gym 2</h5>
-                        <!-- Check if Gym 2 is open or reserved -->
-                        {% if gym2_is_open %}
-                            <div class="gym-status status-open bg-success text-white py-2">Open</div>
-                            <div class="text-center mb-4 d-flex justify-content-center gap-3">
-                                <a href="#" class="btn btn-info start-workout-btn" data-gym-id="{{ gym2.id }}" data-url="{% url 'start_workout' gym2.id %}">I'm Working Out</a>
-                                <a href="#" class="btn btn-secondary end-workout-btn" data-gym-id="{{ gym2.id }}" data-url="{% url 'end_workout' gym2.id %}">I'm Done Working Out</a>                                
-
-                            </div>
-                            <a href="{% url 'reservations' gym2.id %}" class="btn btn-primary mt-3">Make a Reservation</a>
-                        {% else %}
-                            <div class="gym-status status-occupied bg-danger text-white py-2">Occupied</div>
-                            <a href="#" class="btn btn-primary mt-3 disabled">Make a Reservation</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </main>
 
-        <!-- Including jQuery -->
+    <!-- Include jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     
     <script>
@@ -94,7 +73,7 @@
                 const btn = $(this);
                 const gymId = btn.data('gym-id');
                 
-                // Send WebSocket message or AJAX request to start workout
+                // Send AJAX request to start workout
                 $.ajax({
                     url: btn.data('url'),
                     type: 'GET',
@@ -125,7 +104,7 @@
                 const btn = $(this);
                 const gymId = btn.data('gym-id');
                 
-                // Send WebSocket message or AJAX request to end workout
+                // Send AJAX request to end workout
                 $.ajax({
                     url: btn.data('url'),
                     type: 'GET',
@@ -150,6 +129,5 @@
                 });
             });
         });
-
     </script>
 {% endblock %}
