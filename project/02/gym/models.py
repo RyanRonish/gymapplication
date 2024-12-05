@@ -11,7 +11,7 @@ from django.dispatch import receiver
 class Gym(models.Model):
     name = models.CharField(max_length=100)
     is_open = models.BooleanField(default=True)  # Tracks if the gym is available
-    last_updated = models.DateTimeField(auto_now=True)  # Optional for tracking updates
+    #last_updated = models.DateTimeField(auto_now=True)  # Optional for tracking updates
 
     def __str__(self):
        return self.name
