@@ -8,6 +8,7 @@ from django.utils.dateparse import parse_datetime
 from .models import Gym, Reservation
 from .forms import CustomUserCreationForm, ProfileForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 
 @login_required
 def home(request):
