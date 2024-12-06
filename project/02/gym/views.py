@@ -132,20 +132,25 @@ from .models import Gym
 @require_http_methods(["POST"])
 def start_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
-    gym.is_occupied = False
+    # User starts a workout: the gym is now occupied
+    gym.is_occupied = True
     gym.save()
+    # If it's occupied, then gym_open = False
     return JsonResponse({'status': 'success', 'gym_open': False})
 
 @require_http_methods(["POST"])
 def end_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
+    # User ends a workout: the gym is now free
     gym.is_occupied = False
     gym.save()
+    # If it's free, then gym_open = True
     return JsonResponse({'status': 'success', 'gym_open': True})
 
 @require_http_methods(["GET"])
 def get_gym_status(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
+    # gym_open is simply the inverse of is_occupied
     return JsonResponse({'status': 'success', 'gym_open': not gym.is_occupied})
 
 
