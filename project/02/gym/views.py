@@ -40,7 +40,7 @@ def home(request):
         'gym2': gym2,
         'gym2_is_open': gym2.is_open
     }
-    return render(request, 'home.html', context)
+    return render(request, 'gym_reservation/home.html', context)
 
 
 # ----------------------------------------
