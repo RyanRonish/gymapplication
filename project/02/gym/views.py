@@ -136,7 +136,7 @@ def start_workout(request, gym_id):
     gym.is_occupied = True
     gym.save()
     # If it's occupied, then gym_open = False
-    return JsonResponse({'status': 'success', 'gym_open': False})
+    return JsonResponse({'status': 'success', 'gym_open': True})
 
 @require_http_methods(["POST"])
 def end_workout(request, gym_id):
