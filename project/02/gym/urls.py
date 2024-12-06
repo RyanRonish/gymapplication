@@ -54,3 +54,12 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+from django.urls import path
+from .views import my_profile_view, user_detail_view
+
+urlpatterns = [
+    path('profile/', my_profile_view, name='my_profile'),
+    path('profile/<str:username>/', user_detail_view, name='user_detail'),
+]
