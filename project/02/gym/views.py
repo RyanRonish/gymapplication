@@ -142,7 +142,7 @@ def start_workout(request, gym_id):
 def end_workout(request, gym_id):
     gym = Gym.objects.get(id=gym_id)
     # User ends a workout: the gym is now free
-    gym.is_occupied = True
+    gym.is_occupied = False
     gym.save()
     # If it's free, then gym_open = True
     return JsonResponse({'status': 'success', 'gym_open': True})
