@@ -18,6 +18,8 @@ from . import views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path
+from .views import my_profile_view, user_detail_view
 
 urlpatterns = [
     # Home page
@@ -48,6 +50,9 @@ urlpatterns = [
 
     path('cancel-reservation/<int:reservation_id>/', views.cancel_reservation, name='cancel-reservation'),
 
+    path('profile/', my_profile_view, name='my_profile'),
+    path('profile/<str:username>/', user_detail_view, name='user_detail'),
+
 
     # Authentication routes
     path('login/', auth_views.LoginView.as_view(), name='login'),
@@ -56,10 +61,3 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
-from django.urls import path
-from .views import my_profile_view, user_detail_view
-
-urlpatterns = [
-    path('profile/', my_profile_view, name='my_profile'),
-    path('profile/<str:username>/', user_detail_view, name='user_detail'),
-]
