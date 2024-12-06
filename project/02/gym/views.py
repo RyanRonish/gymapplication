@@ -17,8 +17,8 @@ from .forms import CustomUserCreationForm, ProfileForm
 @login_required
 def home(request):
     # Ensure Gym 1 and Gym 2 exist
-    gym1, _ = Gym.objects.get_or_create(name='Gym 1')
-    gym2, _ = Gym.objects.get_or_create(name='Gym 2')
+    gym1 = Gym.objects.get(id=1)
+    gym2 = Gym.objects.get(id=2)
     current_time = timezone.now()
 
     # Determine if Gym 1 and Gym 2 are open
@@ -36,11 +36,11 @@ def home(request):
 
     context = {
         'gym1': gym1,
-        'gym1_is_open': gym1.is_open,
+        'gym1_is_open': gym1.is_occupied,
         'gym2': gym2,
-        'gym2_is_open': gym2.is_open
+        'gym2_is_open': gym2.is_occupied
     }
-    return render(request, 'gym_reservation/home.html', context)
+    return render(request, 'home.html', context)
 
 
 # ----------------------------------------
