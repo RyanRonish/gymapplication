@@ -36,9 +36,9 @@ def home(request):
 
     context = {
         'gym1': gym1,
-        'gym1_is_open': gym1.is_occupied,
+        'gym1_is_open': gym1.is_open,
         'gym2': gym2,
-        'gym2_is_open': gym2.is_occupied
+        'gym2_is_open': gym2.is_open
     }
     return render(request, 'home.html', context)
 
