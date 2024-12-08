@@ -31,17 +31,6 @@
                 <p><strong>Apartment Number:</strong> {{ user.profile.apartment_number }}</p>
                 <p><strong>Building:</strong> {{ user.profile.bio }}</p>
 
-                <!-- Social Media Links -->
-                {% if user.profile.twitter %}
-                    <p><strong>Twitter:</strong> <a href="{{ user.profile.twitter }}" target="_blank">{{ user.profile.twitter }}</a></p>
-                {% endif %}
-                {% if user.profile.linkedin %}
-                    <p><strong>LinkedIn:</strong> <a href="{{ user.profile.linkedin }}" target="_blank">{{ user.profile.linkedin }}</a></p>
-                {% endif %}
-                {% if user.profile.github %}
-                    <p><strong>GitHub:</strong> <a href="{{ user.profile.github }}" target="_blank">{{ user.profile.github }}</a></p>
-                {% endif %}
-            </div>
         </div>
     </div>
 </main>
