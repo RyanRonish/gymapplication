@@ -231,26 +231,3 @@ def get_current_status_for_gym(request, gym_id):
         return JsonResponse({'status': 'error', 'message': 'Gym not found'}, status=404) 
     
 
-# Profile updates to have other users see other users profiles 
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from .forms import ProfileForm
-
-@login_required
-def my_profile_view(request):
-    profile = request.user.profile
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            return redirect('my_profile')
-    else:
-        form = ProfileForm(instance=profile)
-
-    return render(request, 'my_profile.html', {'form': form, 'user': request.user})
-
-def user_detail_view(request, username):
-    viewed_user = get_object_or_404(User, username=username)
-    return render(request, 'user_detail.html', {'viewed_user': viewed_user})

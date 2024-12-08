@@ -59,22 +59,3 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
-# ----------------------------------
-# Profiles that are seen by other users. 
-#------------------------------------
-
-from django.db import models
-from django.contrib.auth.models import User
-
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    apartment_number = models.CharField(max_length=50, blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
-    # New fields for social media
-    twitter = models.URLField(max_length=200, blank=True, null=True)
-    linkedin = models.URLField(max_length=200, blank=True, null=True)
-    github = models.URLField(max_length=200, blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.user.username}'s Profile"
