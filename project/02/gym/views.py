@@ -231,3 +231,36 @@ def get_current_status_for_gym(request, gym_id):
         return JsonResponse({'status': 'error', 'message': 'Gym not found'}, status=404) 
     
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from .forms import ProfileForm
+
+@login_required
+def my_profile_view(request):
+    # Get the logged-in user's profile
+    profile = request.user.profile
+
+    # If the user is submitting the form (POST request)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('my_profile')
+    else:
+        # Display the form with the existing profile data
+        form = ProfileForm(instance=profile)
+
+    # Render the template with the profile form and user data
+    context = {
+        'form': form,
+        'user': request.user
+    }
+    return render(request, 'my_profile.html', context)
+
+
+def user_detail_view(request, username):
+    # View another user's profile by their username
+    viewed_user = get_object_or_404(User, username=username)
+    return render(request, 'user_detail.html', {'viewed_user': viewed_user})
