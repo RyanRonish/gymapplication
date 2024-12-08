@@ -50,8 +50,8 @@ urlpatterns = [
 
     path('cancel-reservation/<int:reservation_id>/', views.cancel_reservation, name='cancel-reservation'),
 
-    path('profile/', my_profile_view, name='my_profile'),
-    path('profile/<str:username>/', user_detail_view, name='user_detail'),
+    #path('profile/', my_profile_view, name='my_profile'),
+    #path('profile/<str:username>/', user_detail_view, name='user_detail'),
 
 
     # Authentication routes
